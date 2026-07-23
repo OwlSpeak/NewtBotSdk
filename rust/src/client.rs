@@ -1250,6 +1250,103 @@ impl Client {
         }
         Ok(serde_json::from_str(&text)?)
     }
+
+    /// 从本地路径 multipart 上传（字段名 `file`）。
+    pub async fn upload_file(
+        &self,
+        method: reqwest::Method,
+        api_path: &str,
+        file_path: impl AsRef<std::path::Path>,
+    ) -> Result<Value> {
+        let path = file_path.as_ref();
+        let data = tokio::fs::read(path)
+            .await
+            .map_err(|e| Error::Invalid(format!("读取文件失败: {e}")))?;
+        let filename = path
+            .file_name()
+            .and_then(|s| s.to_str())
+            .unwrap_or("file.bin");
+        self.upload_multipart(method, api_path, filename, data).await
+    }
+
+    pub async fn upload_guild_icon_file(
+        &self,
+        guild_id: &str,
+        file_path: impl AsRef<std::path::Path>,
+    ) -> Result<Value> {
+        self.upload_file(
+            reqwest::Method::POST,
+            &format!("/guilds/{guild_id}/icon"),
+            file_path,
+        )
+        .await
+    }
+
+    pub async fn upload_guild_banner_file(
+        &self,
+        guild_id: &str,
+        file_path: impl AsRef<std::path::Path>,
+    ) -> Result<Value> {
+        self.upload_file(
+            reqwest::Method::POST,
+            &format!("/guilds/{guild_id}/banner"),
+            file_path,
+        )
+        .await
+    }
+
+    pub async fn add_banner_file(
+        &self,
+        guild_id: &str,
+        file_path: impl AsRef<std::path::Path>,
+    ) -> Result<Value> {
+        self.upload_file(
+            reqwest::Method::POST,
+            &format!("/guilds/{guild_id}/banners"),
+            file_path,
+        )
+        .await
+    }
+
+    pub async fn upload_voice_pack_audio_file(
+        &self,
+        guild_id: &str,
+        pack_id: &str,
+        file_path: impl AsRef<std::path::Path>,
+    ) -> Result<Value> {
+        self.upload_file(
+            reqwest::Method::POST,
+            &format!("/guilds/{guild_id}/voice-packs/{pack_id}/audio"),
+            file_path,
+        )
+        .await
+    }
+
+    pub async fn upload_sticker_pack_cover_file(
+        &self,
+        pack_id: &str,
+        file_path: impl AsRef<std::path::Path>,
+    ) -> Result<Value> {
+        self.upload_file(
+            reqwest::Method::PUT,
+            &format!("/users/@me/sticker-packs/{pack_id}/cover"),
+            file_path,
+        )
+        .await
+    }
+
+    pub async fn upload_sticker_item_file(
+        &self,
+        pack_id: &str,
+        file_path: impl AsRef<std::path::Path>,
+    ) -> Result<Value> {
+        self.upload_file(
+            reqwest::Method::POST,
+            &format!("/users/@me/sticker-packs/{pack_id}/items"),
+            file_path,
+        )
+        .await
+    }
 }
 
 fn parse_api_error(text: &str) -> (String, String) {

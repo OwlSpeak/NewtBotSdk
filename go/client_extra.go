@@ -2,6 +2,7 @@ package owlbot
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -9,7 +10,6 @@ import (
 	"net/url"
 	"path/filepath"
 	"strings"
-	"encoding/json"
 )
 
 // Raw 通用请求：method + path（相对 /bot-api/v1）+ body；out 可为 nil。

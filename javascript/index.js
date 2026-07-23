@@ -791,6 +791,49 @@ export class OwlBotClient {
     return data
   }
 
+  /**
+   * 从本地路径上传（Node.js fs）。浏览器请用 uploadMultipart(Blob)。
+   * @param {string} method
+   * @param {string} apiPath 相对 /bot-api/v1 的路径
+   * @param {string} filePath 本地文件路径
+   */
+  async uploadFile(method, apiPath, filePath) {
+    const { readFile } = await import("node:fs/promises")
+    const { basename } = await import("node:path")
+    const buf = await readFile(filePath)
+    return this.uploadMultipart(method, apiPath, buf, basename(filePath))
+  }
+
+  /** 从本地路径上传服务器图标。 */
+  uploadGuildIconFile(guildId, filePath) {
+    return this.uploadFile("POST", `/guilds/${guildId}/icon`, filePath)
+  }
+
+  /** 从本地路径上传服务器横幅。 */
+  uploadGuildBannerFile(guildId, filePath) {
+    return this.uploadFile("POST", `/guilds/${guildId}/banner`, filePath)
+  }
+
+  /** 从本地路径添加 multi-banner。 */
+  addBannerFile(guildId, filePath) {
+    return this.uploadFile("POST", `/guilds/${guildId}/banners`, filePath)
+  }
+
+  /** 从本地路径上传入场语音包音频。 */
+  uploadVoicePackAudioFile(guildId, packId, filePath) {
+    return this.uploadFile("POST", `/guilds/${guildId}/voice-packs/${packId}/audio`, filePath)
+  }
+
+  /** 从本地路径上传贴图包封面。 */
+  uploadStickerPackCoverFile(packId, filePath) {
+    return this.uploadFile("PUT", `/users/@me/sticker-packs/${packId}/cover`, filePath)
+  }
+
+  /** 从本地路径上传贴图条目。 */
+  uploadStickerItemFile(packId, filePath) {
+    return this.uploadFile("POST", `/users/@me/sticker-packs/${packId}/items`, filePath)
+  }
+
   // ---------- Gateway 实时事件 ----------
 
   /**

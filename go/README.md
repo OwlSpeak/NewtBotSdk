@@ -102,4 +102,28 @@ gw.On("MESSAGE_REACTION_ADD", func(payload json.RawMessage) {
 相关 API：`Roles` / `CreateRole` / `AddMemberRole` / `RemoveMemberRole` / `Member` /
 `SetOverwrite` / `ListReactionUsers`。安装后需给 bot 绑定带 `MANAGE_ROLES` 的角色。
 
-完整协议文档见 [`../README.md`](../README.md)。
+## 文件上传
+
+```go
+// 字节
+_, _ = bot.UploadGuildIcon(guildID, "icon.png", pngBytes)
+
+// 本地路径（推荐）
+_, _ = bot.UploadGuildIconFile(guildID, "./assets/icon.png")
+_, _ = bot.UploadStickerItemFile(packID, "./stickers/wave.png")
+
+// 通用 multipart
+_, _ = bot.UploadFile("POST", "/guilds/"+guildID+"/icon", "./assets/icon.png")
+```
+
+## 文档
+
+- 协议：[`../docs/API.md`](../docs/API.md)
+- 覆盖矩阵：[`../docs/COVERAGE.md`](../docs/COVERAGE.md)
+- **方法目录（godoc 式）**：[`../docs/METHODS.md`](../docs/METHODS.md)
+- monorepo 总览：[`../README.md`](../README.md)
+
+```bash
+# 本地 godoc
+cd go && go doc -all . | less
+```

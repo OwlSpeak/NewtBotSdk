@@ -419,11 +419,18 @@ class OwlBotClient:
     def upload_guild_icon(self, guild_id: str, data: bytes, filename: str = "icon.png") -> Dict[str, Any]:
         return self._upload_multipart("POST", f"/guilds/{guild_id}/icon", data, filename)
 
+    def upload_guild_icon_file(self, guild_id: str, path: str) -> Dict[str, Any]:
+        """从本地路径上传服务器图标。"""
+        return self._upload_file_path("POST", f"/guilds/{guild_id}/icon", path)
+
     def delete_guild_icon(self, guild_id: str) -> None:
         self._request("DELETE", f"/guilds/{guild_id}/icon")
 
     def upload_guild_banner(self, guild_id: str, data: bytes, filename: str = "banner.png") -> Dict[str, Any]:
         return self._upload_multipart("POST", f"/guilds/{guild_id}/banner", data, filename)
+
+    def upload_guild_banner_file(self, guild_id: str, path: str) -> Dict[str, Any]:
+        return self._upload_file_path("POST", f"/guilds/{guild_id}/banner", path)
 
     def delete_guild_banner(self, guild_id: str) -> None:
         self._request("DELETE", f"/guilds/{guild_id}/banner")
@@ -433,6 +440,9 @@ class OwlBotClient:
 
     def add_banner(self, guild_id: str, data: bytes, filename: str = "banner.png") -> Dict[str, Any]:
         return self._upload_multipart("POST", f"/guilds/{guild_id}/banners", data, filename)
+
+    def add_banner_file(self, guild_id: str, path: str) -> Dict[str, Any]:
+        return self._upload_file_path("POST", f"/guilds/{guild_id}/banners", path)
 
     def reorder_banners(self, guild_id: str, body: Any) -> None:
         self._request("PATCH", f"/guilds/{guild_id}/banners", body)
@@ -495,6 +505,9 @@ class OwlBotClient:
         self, guild_id: str, pack_id: str, data: bytes, filename: str = "pack.ogg"
     ) -> Dict[str, Any]:
         return self._upload_multipart("POST", f"/guilds/{guild_id}/voice-packs/{pack_id}/audio", data, filename)
+
+    def upload_voice_pack_audio_file(self, guild_id: str, pack_id: str, path: str) -> Dict[str, Any]:
+        return self._upload_file_path("POST", f"/guilds/{guild_id}/voice-packs/{pack_id}/audio", path)
 
     def select_voice_pack(self, guild_id: str, pack_id: str) -> None:
         self._request("PUT", f"/guilds/{guild_id}/voice-packs/{pack_id}/select", {})
@@ -603,6 +616,9 @@ class OwlBotClient:
     ) -> Dict[str, Any]:
         return self._upload_multipart("PUT", f"/users/@me/sticker-packs/{pack_id}/cover", data, filename)
 
+    def upload_sticker_pack_cover_file(self, pack_id: str, path: str) -> Dict[str, Any]:
+        return self._upload_file_path("PUT", f"/users/@me/sticker-packs/{pack_id}/cover", path)
+
     def delete_sticker_pack_cover(self, pack_id: str) -> None:
         self._request("DELETE", f"/users/@me/sticker-packs/{pack_id}/cover")
 
@@ -610,6 +626,9 @@ class OwlBotClient:
         self, pack_id: str, data: bytes, filename: str = "item.png"
     ) -> Dict[str, Any]:
         return self._upload_multipart("POST", f"/users/@me/sticker-packs/{pack_id}/items", data, filename)
+
+    def upload_sticker_item_file(self, pack_id: str, path: str) -> Dict[str, Any]:
+        return self._upload_file_path("POST", f"/users/@me/sticker-packs/{pack_id}/items", path)
 
     def patch_sticker_item(self, pack_id: str, item_id: str, body: Dict[str, Any]) -> Dict[str, Any]:
         return self._request("PATCH", f"/users/@me/sticker-packs/{pack_id}/items/{item_id}", body)
@@ -647,6 +666,18 @@ class OwlBotClient:
 
     def unban_sticker_pack(self, guild_id: str, pack_id: str) -> None:
         self._request("DELETE", f"/guilds/{guild_id}/sticker-pack-bans/{pack_id}")
+
+    def _upload_file_path(self, method: str, api_path: str, file_path: str) -> Dict[str, Any]:
+        """从本地路径读取文件并 multipart 上传（字段名 file）。"""
+        import os
+
+        with open(file_path, "rb") as f:
+            data = f.read()
+        return self._upload_multipart(method, api_path, data, os.path.basename(file_path))
+
+    def upload_file(self, method: str, api_path: str, file_path: str) -> Dict[str, Any]:
+        """通用路径上传：method + API path + 本地文件路径。"""
+        return self._upload_file_path(method, api_path, file_path)
 
     def _upload_multipart(self, method: str, path: str, data: bytes, filename: str) -> Dict[str, Any]:
         boundary = f"----OwlBot{uuid.uuid4().hex}"

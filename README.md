@@ -9,7 +9,13 @@ OwlSpeak 机器人开放平台 **官方多语言 SDK**  monorepo。
 | **Python** | [`python/`](python/) | `owlspeak-bot` | REST 标准库；Gateway 可选 `websockets` |
 | **Rust** | [`rust/`](rust/) | `owlspeak-bot` | `reqwest` + `tokio` + `tokio-tungstenite` |
 
-协议文档（HTTP / Gateway / 能力矩阵）：**[`docs/API.md`](docs/API.md)**
+文档：
+
+| 文档 | 内容 |
+|------|------|
+| [`docs/API.md`](docs/API.md) | HTTP / Gateway 协议与能力矩阵 |
+| [`docs/COVERAGE.md`](docs/COVERAGE.md) | 服务端挂载 ↔ SDK 覆盖 |
+| [`docs/METHODS.md`](docs/METHODS.md) | Go `Client` 公开方法目录（144+） |
 
 ---
 
@@ -148,6 +154,34 @@ OwlBotSdk/
 Owl-Server 内若仍保留 `sdk/` 目录，仅作兼容镜像；**以本仓库为权威源**。
 
 ---
+
+## 文件上传（路径便捷 API）
+
+```go
+// Go
+_, err := bot.UploadGuildIconFile(guildID, "./assets/icon.png")
+_, err = bot.UploadStickerItemFile(packID, "./stickers/wave.png")
+// 通用：bot.UploadFile("POST", "/guilds/"+id+"/icon", "./icon.png")
+```
+
+```js
+// JavaScript（Node）
+await bot.uploadGuildIconFile(guildId, "./assets/icon.png")
+await bot.uploadStickerItemFile(packId, "./stickers/wave.png")
+// 浏览器：await bot.uploadMultipart("POST", `/guilds/${id}/icon`, fileBlob, "icon.png")
+```
+
+```python
+# Python
+bot.upload_guild_icon_file(guild_id, "./assets/icon.png")
+bot.upload_sticker_item_file(pack_id, "./stickers/wave.png")
+```
+
+```rust
+// Rust
+bot.upload_guild_icon_file(guild_id, "./assets/icon.png").await?;
+bot.upload_sticker_item_file(pack_id, "./stickers/wave.png").await?;
+```
 
 ## 开发
 

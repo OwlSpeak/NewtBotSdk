@@ -243,6 +243,14 @@ export class OwlBotClient {
   banStickerPack(guildId: string, packId: string): Promise<void>
   unbanStickerPack(guildId: string, packId: string): Promise<void>
   uploadMultipart(method: string, path: string, file: Blob | ArrayBuffer | Uint8Array, filename?: string): Promise<unknown>
+  /** Node 本地路径上传；浏览器请用 uploadMultipart。 */
+  uploadFile(method: string, apiPath: string, filePath: string): Promise<unknown>
+  uploadGuildIconFile(guildId: string, filePath: string): Promise<Record<string, unknown>>
+  uploadGuildBannerFile(guildId: string, filePath: string): Promise<Record<string, unknown>>
+  addBannerFile(guildId: string, filePath: string): Promise<Record<string, unknown>>
+  uploadVoicePackAudioFile(guildId: string, packId: string, filePath: string): Promise<Record<string, unknown>>
+  uploadStickerPackCoverFile(packId: string, filePath: string): Promise<Record<string, unknown>>
+  uploadStickerItemFile(packId: string, filePath: string): Promise<Record<string, unknown>>
   request(method: string, path: string, body?: unknown): Promise<unknown>
   connectGateway(): BotGateway
 }

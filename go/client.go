@@ -1,8 +1,27 @@
 // Package owlbot 是 OwlSpeak 机器人开放平台的官方 Go SDK。
 //
-// 认证：Authorization: Bot <token>；基础地址自动拼接 /bot-api/v1。
-// 语音媒体层可搭配 pion/webrtc 使用（Media Token 携带 bot=true claim，
-// 机器人在音频流参与者信令中带 is_bot 独立标记）。
+// # 认证
+//
+//	Authorization: Bot <token>
+//	基础地址自动拼接 /bot-api/v1
+//
+// # 能力面
+//
+// 与服务端 bot 平面对齐：服务器/频道/角色/覆盖、成员治理、邀请、Restriction、
+// 消息与反应、附件、入场语音包、语音管理、舞台与屏幕共享、贴图、Gateway。
+// 详见 monorepo docs/API.md 与 docs/COVERAGE.md。
+//
+// # 文件上传
+//
+// 字节上传：UploadGuildIcon(guildID, filename, data)
+// 路径上传：UploadGuildIconFile(guildID, "/path/to/icon.png")
+// 通用：UploadFile("POST", "/guilds/{id}/icon", "/path/to/file.png")
+//
+// # 底层逃生舱
+//
+//	client.Raw("GET", "/guilds/"+gid+"/roles", nil, &out)
+//
+// 语音媒体层可搭配 pion/webrtc（Media Token 含 bot=true claim）。
 package owlbot
 
 import (
