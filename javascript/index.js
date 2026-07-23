@@ -469,6 +469,328 @@ export class OwlBotClient {
     )
   }
 
+  // ---------- 频道排序 / 解锁 / 角色排序 ----------
+
+  reorderChannels(guildId, entries) {
+    return this.request("PATCH", `/guilds/${guildId}/channels`, entries)
+  }
+
+  unlockChannel(channelId, password) {
+    return this.request("POST", `/channels/${channelId}/unlock`, { password })
+  }
+
+  unlockStatus(channelId) {
+    return this.request("GET", `/channels/${channelId}/unlock-status`)
+  }
+
+  reorderRoles(guildId, entries) {
+    return this.request("PATCH", `/guilds/${guildId}/roles`, entries)
+  }
+
+  // ---------- 服务器图标 / 横幅 / multi-banner ----------
+
+  async uploadGuildIcon(guildId, file, filename = "icon.png") {
+    return this.uploadMultipart("POST", `/guilds/${guildId}/icon`, file, filename)
+  }
+
+  deleteGuildIcon(guildId) {
+    return this.request("DELETE", `/guilds/${guildId}/icon`)
+  }
+
+  async uploadGuildBanner(guildId, file, filename = "banner.png") {
+    return this.uploadMultipart("POST", `/guilds/${guildId}/banner`, file, filename)
+  }
+
+  deleteGuildBanner(guildId) {
+    return this.request("DELETE", `/guilds/${guildId}/banner`)
+  }
+
+  banners(guildId) {
+    return this.request("GET", `/guilds/${guildId}/banners`)
+  }
+
+  async addBanner(guildId, file, filename = "banner.png") {
+    return this.uploadMultipart("POST", `/guilds/${guildId}/banners`, file, filename)
+  }
+
+  reorderBanners(guildId, body) {
+    return this.request("PATCH", `/guilds/${guildId}/banners`, body)
+  }
+
+  removeBanner(guildId, bannerId) {
+    return this.request("DELETE", `/guilds/${guildId}/banners/${bannerId}`)
+  }
+
+  // ---------- 成员 name-style / 邀请预览 ----------
+
+  updateNameStyle(guildId, memberId, body) {
+    return this.request("PATCH", `/guilds/${guildId}/members/${memberId}/name-style`, body)
+  }
+
+  invite(code) {
+    return this.request("GET", `/invites/${code}`)
+  }
+
+  previewInvite(code) {
+    return this.request("GET", `/invites/${code}/preview`)
+  }
+
+  deleteGuildInvite(guildId, code) {
+    return this.request("DELETE", `/guilds/${guildId}/invites/${code}`)
+  }
+
+  // ---------- 消息扩展：编辑历史 / 已读 / 附件 ----------
+
+  listEdits(channelId, messageId) {
+    return this.request("GET", `/channels/${channelId}/messages/${messageId}/edits`)
+  }
+
+  ackMessage(channelId, messageId) {
+    return this.request("POST", `/channels/${channelId}/messages/${messageId}/ack`, {})
+  }
+
+  ackChannel(channelId, body = {}) {
+    return this.request("POST", `/channels/${channelId}/ack`, body)
+  }
+
+  ackGuild(guildId) {
+    return this.request("POST", `/guilds/${guildId}/ack`, {})
+  }
+
+  readStates() {
+    return this.request("GET", "/users/@me/read-states")
+  }
+
+  presignAttachment(channelId, body) {
+    return this.request("POST", `/channels/${channelId}/attachments/presign`, body)
+  }
+
+  async uploadAttachmentContent(attachmentId, data, contentType = "application/octet-stream") {
+    const response = await fetch(`${this.apiBase}/attachments/${attachmentId}/content`, {
+      method: "PUT",
+      headers: { Authorization: `Bot ${this.token}`, "Content-Type": contentType },
+      body: data,
+    })
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}))
+      throw new OwlBotError(response.status, err?.error?.code, err?.error?.message)
+    }
+  }
+
+  uploadLimit(guildId) {
+    return this.request("GET", `/guilds/${guildId}/upload-limit`)
+  }
+
+  // ---------- 入场语音包 ----------
+
+  voicePacks(guildId) {
+    return this.request("GET", `/guilds/${guildId}/voice-packs`)
+  }
+
+  createVoicePack(guildId, body) {
+    return this.request("POST", `/guilds/${guildId}/voice-packs`, body)
+  }
+
+  patchVoicePack(guildId, packId, body) {
+    return this.request("PATCH", `/guilds/${guildId}/voice-packs/${packId}`, body)
+  }
+
+  deleteVoicePack(guildId, packId) {
+    return this.request("DELETE", `/guilds/${guildId}/voice-packs/${packId}`)
+  }
+
+  async uploadVoicePackAudio(guildId, packId, file, filename = "pack.ogg") {
+    return this.uploadMultipart("POST", `/guilds/${guildId}/voice-packs/${packId}/audio`, file, filename)
+  }
+
+  selectVoicePack(guildId, packId) {
+    return this.request("PUT", `/guilds/${guildId}/voice-packs/${packId}/select`, {})
+  }
+
+  myVoicePack(guildId) {
+    return this.request("GET", `/guilds/${guildId}/voice-packs/@me`)
+  }
+
+  clearMyVoicePack(guildId) {
+    return this.request("DELETE", `/guilds/${guildId}/voice-packs/@me`)
+  }
+
+  guildVoicePackConfig(guildId) {
+    return this.request("GET", `/guilds/${guildId}/voice-pack`)
+  }
+
+  patchGuildVoicePackConfig(guildId, body) {
+    return this.request("PATCH", `/guilds/${guildId}/voice-pack`, body)
+  }
+
+  channelVoicePackConfig(guildId, channelId) {
+    return this.request("GET", `/guilds/${guildId}/channels/${channelId}/voice-pack`)
+  }
+
+  putChannelVoicePackConfig(guildId, channelId, body) {
+    return this.request("PUT", `/guilds/${guildId}/channels/${channelId}/voice-pack`, body)
+  }
+
+  // ---------- 语音扩展 ----------
+
+  patchSelfVoiceState(guildId, { selfMute, selfDeaf } = {}) {
+    return this.request("PATCH", "/voice/state", {
+      guild_id: guildId,
+      self_mute: selfMute,
+      self_deaf: selfDeaf,
+    })
+  }
+
+  voiceNodes(guildId) {
+    return this.request("GET", `/guilds/${guildId}/voice/nodes`)
+  }
+
+  voicePublicKey() {
+    return this.request("GET", "/voice/public-key")
+  }
+
+  reportVoiceRtt(body) {
+    return this.request("POST", "/voice/rtt", body)
+  }
+
+  reportIceFailed(body) {
+    return this.request("POST", "/voice/ice-failed", body)
+  }
+
+  ackMigration(migrationId, body = {}) {
+    return this.request("POST", `/voice/migrations/${migrationId}/ack`, body)
+  }
+
+  // ---------- 舞台队列 / 屏幕共享 ----------
+
+  stageQueue(channelId) {
+    return this.request("GET", `/channels/${channelId}/stage/queue`)
+  }
+
+  stageRemoveFromQueue(channelId, userId) {
+    return this.request("DELETE", `/channels/${channelId}/stage/queue/${userId}`)
+  }
+
+  screenStart(channelId, body = {}) {
+    return this.request("POST", `/channels/${channelId}/voice/screen/start`, body)
+  }
+
+  screenStop(channelId) {
+    return this.request("POST", `/channels/${channelId}/voice/screen/stop`, {})
+  }
+
+  screenStopUser(channelId, body) {
+    return this.request("POST", `/channels/${channelId}/voice/screen/stop-user`, body)
+  }
+
+  screenQuota(guildId) {
+    return this.request("GET", `/guilds/${guildId}/screen-quota`)
+  }
+
+  // ---------- 贴图 ----------
+
+  myStickerPacks() {
+    return this.request("GET", "/users/@me/sticker-packs")
+  }
+
+  createStickerPack(body) {
+    return this.request("POST", "/users/@me/sticker-packs", body)
+  }
+
+  patchStickerPack(packId, body) {
+    return this.request("PATCH", `/users/@me/sticker-packs/${packId}`, body)
+  }
+
+  deleteStickerPack(packId) {
+    return this.request("DELETE", `/users/@me/sticker-packs/${packId}`)
+  }
+
+  restoreStickerPack(packId) {
+    return this.request("POST", `/users/@me/sticker-packs/${packId}/restore`, {})
+  }
+
+  async uploadStickerPackCover(packId, file, filename = "cover.png") {
+    return this.uploadMultipart("PUT", `/users/@me/sticker-packs/${packId}/cover`, file, filename)
+  }
+
+  deleteStickerPackCover(packId) {
+    return this.request("DELETE", `/users/@me/sticker-packs/${packId}/cover`)
+  }
+
+  async uploadStickerItem(packId, file, filename = "item.png") {
+    return this.uploadMultipart("POST", `/users/@me/sticker-packs/${packId}/items`, file, filename)
+  }
+
+  patchStickerItem(packId, itemId, body) {
+    return this.request("PATCH", `/users/@me/sticker-packs/${packId}/items/${itemId}`, body)
+  }
+
+  deleteStickerItem(packId, itemId) {
+    return this.request("DELETE", `/users/@me/sticker-packs/${packId}/items/${itemId}`)
+  }
+
+  copyStickerItem(packId, body) {
+    return this.request("POST", `/users/@me/sticker-packs/${packId}/items/copy`, body)
+  }
+
+  stickerLibrary() {
+    return this.request("GET", "/users/@me/sticker-library")
+  }
+
+  installStickerPack(packId) {
+    return this.request("PUT", `/users/@me/sticker-library/${packId}`, {})
+  }
+
+  uninstallStickerPack(packId) {
+    return this.request("DELETE", `/users/@me/sticker-library/${packId}`)
+  }
+
+  stickerAvailable(guildId) {
+    const q = guildId ? `?guild_id=${encodeURIComponent(guildId)}` : ""
+    return this.request("GET", `/users/@me/sticker-available${q}`)
+  }
+
+  stickerPack(packId) {
+    return this.request("GET", `/sticker-packs/${packId}`)
+  }
+
+  stickerItem(itemId) {
+    return this.request("GET", `/sticker-items/${itemId}`)
+  }
+
+  stickerPackBans(guildId) {
+    return this.request("GET", `/guilds/${guildId}/sticker-pack-bans`)
+  }
+
+  banStickerPack(guildId, packId) {
+    return this.request("PUT", `/guilds/${guildId}/sticker-pack-bans/${packId}`, {})
+  }
+
+  unbanStickerPack(guildId, packId) {
+    return this.request("DELETE", `/guilds/${guildId}/sticker-pack-bans/${packId}`)
+  }
+
+  /** 通用 multipart 上传（字段名 file）。file 可为 Blob/Buffer/Uint8Array。 */
+  async uploadMultipart(method, path, file, filename = "file.bin") {
+    const form = new FormData()
+    const blob =
+      file instanceof Blob
+        ? file
+        : new Blob([file], { type: "application/octet-stream" })
+    form.append("file", blob, filename)
+    const response = await fetch(this.apiBase + path, {
+      method,
+      headers: { Authorization: `Bot ${this.token}` },
+      body: form,
+    })
+    if (response.status === 204) return undefined
+    const data = await response.json().catch(() => ({}))
+    if (!response.ok) {
+      throw new OwlBotError(response.status, data?.error?.code, data?.error?.message)
+    }
+    return data
+  }
+
   // ---------- Gateway 实时事件 ----------
 
   /**

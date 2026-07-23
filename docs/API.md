@@ -206,12 +206,26 @@ gw.on("MESSAGE_REACTION_ADD", async (ev) => {
 
 完整列表见 `backend/internal/rbac/permissions.go`。
 
+## SDK 覆盖说明
+
+四语言 SDK 均覆盖本文件列出的 **bot 平面** 端点（见 [COVERAGE.md](./COVERAGE.md)），包括：
+
+- 服务器 / 频道 / 角色 / 权限覆盖 / 图标横幅  
+- 成员治理 / 邀请 / Restriction / 审计  
+- 消息、反应、已读 ack、附件 presign、搜索、流式  
+- 入场语音包、语音进房与管理、舞台与屏幕共享  
+- 贴图包 / 库 / 服 ban  
+- Gateway  
+
+各语言另提供底层通用请求（Go `Raw`、JS `request`、Rust `raw`、Python `_request`）以兼容未来新增端点。
+
 ## SDK
 
 | 语言 | 目录 | 说明 |
 |---|---|---|
-| JavaScript / TypeScript | [`javascript/`](javascript/) | 零依赖（Node ≥ 21） |
-| Python | [`python/`](python/) | 标准库 REST；Gateway 可选 `websockets` |
-| Go | [`go/`](go/) | Gateway + 可接 pion 语音 |
+| JavaScript / TypeScript | [`../javascript/`](../javascript/) | 零依赖（Node ≥ 21） |
+| Python | [`../python/`](../python/) | 标准库 REST；Gateway 可选 `websockets` |
+| Go | [`../go/`](../go/) | Gateway + 可接 pion 语音 |
+| Rust | [`../rust/`](../rust/) | 异步 REST + Gateway |
 
 各目录内含完整 README 与示例。

@@ -402,6 +402,275 @@ class OwlBotClient:
     def voice_states(self, guild_id: str, channel_id: str) -> List[Dict[str, Any]]:
         return self._request("GET", f"/guilds/{guild_id}/channels/{channel_id}/voice-states").get("voice_states", [])
 
+    # ---------- 扩展：排序 / 解锁 / 资源 / 消息 / 舞台 / 贴图 ----------
+
+    def reorder_channels(self, guild_id: str, entries: Any) -> None:
+        self._request("PATCH", f"/guilds/{guild_id}/channels", entries)
+
+    def unlock_channel(self, channel_id: str, password: str) -> Dict[str, Any]:
+        return self._request("POST", f"/channels/{channel_id}/unlock", {"password": password})
+
+    def unlock_status(self, channel_id: str) -> Dict[str, Any]:
+        return self._request("GET", f"/channels/{channel_id}/unlock-status")
+
+    def reorder_roles(self, guild_id: str, entries: Any) -> None:
+        self._request("PATCH", f"/guilds/{guild_id}/roles", entries)
+
+    def upload_guild_icon(self, guild_id: str, data: bytes, filename: str = "icon.png") -> Dict[str, Any]:
+        return self._upload_multipart("POST", f"/guilds/{guild_id}/icon", data, filename)
+
+    def delete_guild_icon(self, guild_id: str) -> None:
+        self._request("DELETE", f"/guilds/{guild_id}/icon")
+
+    def upload_guild_banner(self, guild_id: str, data: bytes, filename: str = "banner.png") -> Dict[str, Any]:
+        return self._upload_multipart("POST", f"/guilds/{guild_id}/banner", data, filename)
+
+    def delete_guild_banner(self, guild_id: str) -> None:
+        self._request("DELETE", f"/guilds/{guild_id}/banner")
+
+    def banners(self, guild_id: str) -> Any:
+        return self._request("GET", f"/guilds/{guild_id}/banners")
+
+    def add_banner(self, guild_id: str, data: bytes, filename: str = "banner.png") -> Dict[str, Any]:
+        return self._upload_multipart("POST", f"/guilds/{guild_id}/banners", data, filename)
+
+    def reorder_banners(self, guild_id: str, body: Any) -> None:
+        self._request("PATCH", f"/guilds/{guild_id}/banners", body)
+
+    def remove_banner(self, guild_id: str, banner_id: str) -> None:
+        self._request("DELETE", f"/guilds/{guild_id}/banners/{banner_id}")
+
+    def update_name_style(self, guild_id: str, member_id: str, **body: Any) -> Dict[str, Any]:
+        return self._request("PATCH", f"/guilds/{guild_id}/members/{member_id}/name-style", body)
+
+    def invite(self, code: str) -> Dict[str, Any]:
+        return self._request("GET", f"/invites/{code}")
+
+    def preview_invite(self, code: str) -> Dict[str, Any]:
+        return self._request("GET", f"/invites/{code}/preview")
+
+    def delete_guild_invite(self, guild_id: str, code: str) -> None:
+        self._request("DELETE", f"/guilds/{guild_id}/invites/{code}")
+
+    def restriction(self, guild_id: str, restriction_id: str) -> Dict[str, Any]:
+        return self._request("GET", f"/guilds/{guild_id}/restrictions/{restriction_id}")
+
+    def update_restriction(self, guild_id: str, restriction_id: str, body: Dict[str, Any]) -> Dict[str, Any]:
+        return self._request("PATCH", f"/guilds/{guild_id}/restrictions/{restriction_id}", body)
+
+    def list_edits(self, channel_id: str, message_id: str) -> Any:
+        return self._request("GET", f"/channels/{channel_id}/messages/{message_id}/edits")
+
+    def ack_message(self, channel_id: str, message_id: str) -> None:
+        self._request("POST", f"/channels/{channel_id}/messages/{message_id}/ack", {})
+
+    def ack_channel(self, channel_id: str, body: Optional[Dict[str, Any]] = None) -> None:
+        self._request("POST", f"/channels/{channel_id}/ack", body or {})
+
+    def ack_guild(self, guild_id: str) -> None:
+        self._request("POST", f"/guilds/{guild_id}/ack", {})
+
+    def read_states(self) -> Any:
+        return self._request("GET", "/users/@me/read-states")
+
+    def presign_attachment(self, channel_id: str, body: Dict[str, Any]) -> Dict[str, Any]:
+        return self._request("POST", f"/channels/{channel_id}/attachments/presign", body)
+
+    def upload_limit(self, guild_id: str) -> Dict[str, Any]:
+        return self._request("GET", f"/guilds/{guild_id}/upload-limit")
+
+    def voice_packs(self, guild_id: str) -> Any:
+        return self._request("GET", f"/guilds/{guild_id}/voice-packs")
+
+    def create_voice_pack(self, guild_id: str, body: Dict[str, Any]) -> Dict[str, Any]:
+        return self._request("POST", f"/guilds/{guild_id}/voice-packs", body)
+
+    def patch_voice_pack(self, guild_id: str, pack_id: str, body: Dict[str, Any]) -> Dict[str, Any]:
+        return self._request("PATCH", f"/guilds/{guild_id}/voice-packs/{pack_id}", body)
+
+    def delete_voice_pack(self, guild_id: str, pack_id: str) -> None:
+        self._request("DELETE", f"/guilds/{guild_id}/voice-packs/{pack_id}")
+
+    def upload_voice_pack_audio(
+        self, guild_id: str, pack_id: str, data: bytes, filename: str = "pack.ogg"
+    ) -> Dict[str, Any]:
+        return self._upload_multipart("POST", f"/guilds/{guild_id}/voice-packs/{pack_id}/audio", data, filename)
+
+    def select_voice_pack(self, guild_id: str, pack_id: str) -> None:
+        self._request("PUT", f"/guilds/{guild_id}/voice-packs/{pack_id}/select", {})
+
+    def my_voice_pack(self, guild_id: str) -> Dict[str, Any]:
+        return self._request("GET", f"/guilds/{guild_id}/voice-packs/@me")
+
+    def clear_my_voice_pack(self, guild_id: str) -> None:
+        self._request("DELETE", f"/guilds/{guild_id}/voice-packs/@me")
+
+    def guild_voice_pack_config(self, guild_id: str) -> Dict[str, Any]:
+        return self._request("GET", f"/guilds/{guild_id}/voice-pack")
+
+    def patch_guild_voice_pack_config(self, guild_id: str, body: Dict[str, Any]) -> Dict[str, Any]:
+        return self._request("PATCH", f"/guilds/{guild_id}/voice-pack", body)
+
+    def channel_voice_pack_config(self, guild_id: str, channel_id: str) -> Dict[str, Any]:
+        return self._request("GET", f"/guilds/{guild_id}/channels/{channel_id}/voice-pack")
+
+    def put_channel_voice_pack_config(
+        self, guild_id: str, channel_id: str, body: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        return self._request("PUT", f"/guilds/{guild_id}/channels/{channel_id}/voice-pack", body)
+
+    def patch_self_voice_state(
+        self, guild_id: str, *, self_mute: Optional[bool] = None, self_deaf: Optional[bool] = None
+    ) -> None:
+        body: Dict[str, Any] = {"guild_id": guild_id}
+        if self_mute is not None:
+            body["self_mute"] = self_mute
+        if self_deaf is not None:
+            body["self_deaf"] = self_deaf
+        self._request("PATCH", "/voice/state", body)
+
+    def voice_nodes(self, guild_id: str) -> Any:
+        return self._request("GET", f"/guilds/{guild_id}/voice/nodes")
+
+    def voice_public_key(self) -> Dict[str, Any]:
+        return self._request("GET", "/voice/public-key")
+
+    def report_voice_rtt(self, body: Dict[str, Any]) -> None:
+        self._request("POST", "/voice/rtt", body)
+
+    def report_ice_failed(self, body: Dict[str, Any]) -> None:
+        self._request("POST", "/voice/ice-failed", body)
+
+    def ack_migration(self, migration_id: str, body: Optional[Dict[str, Any]] = None) -> None:
+        self._request("POST", f"/voice/migrations/{migration_id}/ack", body or {})
+
+    def get_voice_stage(self, channel_id: str) -> Dict[str, Any]:
+        return self._request("GET", f"/channels/{channel_id}/voice-stage")
+
+    def patch_voice_stage(self, channel_id: str, body: Dict[str, Any]) -> Dict[str, Any]:
+        return self._request("PATCH", f"/channels/{channel_id}/voice-stage", body)
+
+    def stage_queue(self, channel_id: str) -> Any:
+        return self._request("GET", f"/channels/{channel_id}/stage/queue")
+
+    def stage_remove_from_queue(self, channel_id: str, user_id: str) -> None:
+        self._request("DELETE", f"/channels/{channel_id}/stage/queue/{user_id}")
+
+    def stage_apply(self, channel_id: str) -> None:
+        self._request("POST", f"/channels/{channel_id}/stage/apply", {})
+
+    def stage_cancel_apply(self, channel_id: str) -> None:
+        self._request("DELETE", f"/channels/{channel_id}/stage/apply")
+
+    def stage_bring_up(self, channel_id: str, body: Optional[Dict[str, Any]] = None) -> None:
+        self._request("POST", f"/channels/{channel_id}/stage/bring-up", body or {})
+
+    def stage_bring_down(self, channel_id: str, body: Optional[Dict[str, Any]] = None) -> None:
+        self._request("POST", f"/channels/{channel_id}/stage/bring-down", body or {})
+
+    def stage_self_leave(self, channel_id: str) -> None:
+        self._request("POST", f"/channels/{channel_id}/stage/self-leave", {})
+
+    def screen_start(self, channel_id: str, body: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        return self._request("POST", f"/channels/{channel_id}/voice/screen/start", body or {})
+
+    def screen_stop(self, channel_id: str) -> None:
+        self._request("POST", f"/channels/{channel_id}/voice/screen/stop", {})
+
+    def screen_stop_user(self, channel_id: str, body: Dict[str, Any]) -> None:
+        self._request("POST", f"/channels/{channel_id}/voice/screen/stop-user", body)
+
+    def screen_quota(self, guild_id: str) -> Dict[str, Any]:
+        return self._request("GET", f"/guilds/{guild_id}/screen-quota")
+
+    def my_sticker_packs(self) -> Any:
+        return self._request("GET", "/users/@me/sticker-packs")
+
+    def create_sticker_pack(self, body: Dict[str, Any]) -> Dict[str, Any]:
+        return self._request("POST", "/users/@me/sticker-packs", body)
+
+    def patch_sticker_pack(self, pack_id: str, body: Dict[str, Any]) -> Dict[str, Any]:
+        return self._request("PATCH", f"/users/@me/sticker-packs/{pack_id}", body)
+
+    def delete_sticker_pack(self, pack_id: str) -> None:
+        self._request("DELETE", f"/users/@me/sticker-packs/{pack_id}")
+
+    def restore_sticker_pack(self, pack_id: str) -> None:
+        self._request("POST", f"/users/@me/sticker-packs/{pack_id}/restore", {})
+
+    def upload_sticker_pack_cover(
+        self, pack_id: str, data: bytes, filename: str = "cover.png"
+    ) -> Dict[str, Any]:
+        return self._upload_multipart("PUT", f"/users/@me/sticker-packs/{pack_id}/cover", data, filename)
+
+    def delete_sticker_pack_cover(self, pack_id: str) -> None:
+        self._request("DELETE", f"/users/@me/sticker-packs/{pack_id}/cover")
+
+    def upload_sticker_item(
+        self, pack_id: str, data: bytes, filename: str = "item.png"
+    ) -> Dict[str, Any]:
+        return self._upload_multipart("POST", f"/users/@me/sticker-packs/{pack_id}/items", data, filename)
+
+    def patch_sticker_item(self, pack_id: str, item_id: str, body: Dict[str, Any]) -> Dict[str, Any]:
+        return self._request("PATCH", f"/users/@me/sticker-packs/{pack_id}/items/{item_id}", body)
+
+    def delete_sticker_item(self, pack_id: str, item_id: str) -> None:
+        self._request("DELETE", f"/users/@me/sticker-packs/{pack_id}/items/{item_id}")
+
+    def copy_sticker_item(self, pack_id: str, body: Dict[str, Any]) -> Dict[str, Any]:
+        return self._request("POST", f"/users/@me/sticker-packs/{pack_id}/items/copy", body)
+
+    def sticker_library(self) -> Any:
+        return self._request("GET", "/users/@me/sticker-library")
+
+    def install_sticker_pack(self, pack_id: str) -> None:
+        self._request("PUT", f"/users/@me/sticker-library/{pack_id}", {})
+
+    def uninstall_sticker_pack(self, pack_id: str) -> None:
+        self._request("DELETE", f"/users/@me/sticker-library/{pack_id}")
+
+    def sticker_available(self, guild_id: Optional[str] = None) -> Any:
+        q = f"?guild_id={urllib.parse.quote(guild_id)}" if guild_id else ""
+        return self._request("GET", f"/users/@me/sticker-available{q}")
+
+    def sticker_pack(self, pack_id: str) -> Dict[str, Any]:
+        return self._request("GET", f"/sticker-packs/{pack_id}")
+
+    def sticker_item(self, item_id: str) -> Dict[str, Any]:
+        return self._request("GET", f"/sticker-items/{item_id}")
+
+    def sticker_pack_bans(self, guild_id: str) -> Any:
+        return self._request("GET", f"/guilds/{guild_id}/sticker-pack-bans")
+
+    def ban_sticker_pack(self, guild_id: str, pack_id: str) -> None:
+        self._request("PUT", f"/guilds/{guild_id}/sticker-pack-bans/{pack_id}", {})
+
+    def unban_sticker_pack(self, guild_id: str, pack_id: str) -> None:
+        self._request("DELETE", f"/guilds/{guild_id}/sticker-pack-bans/{pack_id}")
+
+    def _upload_multipart(self, method: str, path: str, data: bytes, filename: str) -> Dict[str, Any]:
+        boundary = f"----OwlBot{uuid.uuid4().hex}"
+        body = (
+            f"--{boundary}\r\n"
+            f'Content-Disposition: form-data; name="file"; filename="{filename}"\r\n'
+            f"Content-Type: application/octet-stream\r\n\r\n"
+        ).encode() + data + f"\r\n--{boundary}--\r\n".encode()
+        request = urllib.request.Request(self.api_base + path, data=body, method=method)
+        request.add_header("Authorization", f"Bot {self.token}")
+        request.add_header("Content-Type", f"multipart/form-data; boundary={boundary}")
+        try:
+            with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                if response.status == 204:
+                    return {}
+                return json.loads(response.read() or b"{}")
+        except urllib.error.HTTPError as exc:
+            try:
+                payload = json.loads(exc.read() or b"{}")
+            except Exception:
+                payload = {}
+            error = payload.get("error") or {}
+            raise OwlBotError(exc.code, error.get("code"), error.get("message")) from None
+
     # ---------- Gateway ----------
 
     @property

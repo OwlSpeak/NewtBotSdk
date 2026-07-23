@@ -757,6 +757,499 @@ impl Client {
             .await?;
         Ok(())
     }
+
+    // ---------- 通用 raw ----------
+
+    /// 通用 JSON 请求，path 相对 `/bot-api/v1`。
+    pub async fn raw(&self, method: reqwest::Method, path: &str, body: Option<Value>) -> Result<Value> {
+        self.request_json(method, path, body).await
+    }
+
+    // ---------- 排序 / 解锁 / 角色排序 ----------
+
+    pub async fn reorder_channels(&self, guild_id: &str, entries: Value) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::PATCH,
+                &format!("/guilds/{guild_id}/channels"),
+                Some(&entries),
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn unlock_channel(&self, channel_id: &str, password: &str) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::POST,
+            &format!("/channels/{channel_id}/unlock"),
+            Some(json!({ "password": password })),
+        )
+        .await
+    }
+
+    pub async fn unlock_status(&self, channel_id: &str) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::GET,
+            &format!("/channels/{channel_id}/unlock-status"),
+            None,
+        )
+        .await
+    }
+
+    pub async fn reorder_roles(&self, guild_id: &str, entries: Value) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::PATCH,
+                &format!("/guilds/{guild_id}/roles"),
+                Some(&entries),
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn channel_permissions(&self, guild_id: &str, channel_id: &str) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::GET,
+            &format!("/guilds/{guild_id}/channels/{channel_id}/permissions/@me"),
+            None,
+        )
+        .await
+    }
+
+    // ---------- 邀请 / Restriction 详情 ----------
+
+    pub async fn invite(&self, code: &str) -> Result<Value> {
+        self.request_json(reqwest::Method::GET, &format!("/invites/{code}"), None)
+            .await
+    }
+
+    pub async fn preview_invite(&self, code: &str) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::GET,
+            &format!("/invites/{code}/preview"),
+            None,
+        )
+        .await
+    }
+
+    pub async fn restriction(&self, guild_id: &str, restriction_id: &str) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::GET,
+            &format!("/guilds/{guild_id}/restrictions/{restriction_id}"),
+            None,
+        )
+        .await
+    }
+
+    pub async fn update_restriction(
+        &self,
+        guild_id: &str,
+        restriction_id: &str,
+        body: Value,
+    ) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::PATCH,
+            &format!("/guilds/{guild_id}/restrictions/{restriction_id}"),
+            Some(body),
+        )
+        .await
+    }
+
+    // ---------- 消息扩展 ----------
+
+    pub async fn list_edits(&self, channel_id: &str, message_id: &str) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::GET,
+            &format!("/channels/{channel_id}/messages/{message_id}/edits"),
+            None,
+        )
+        .await
+    }
+
+    pub async fn ack_message(&self, channel_id: &str, message_id: &str) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::POST,
+                &format!("/channels/{channel_id}/messages/{message_id}/ack"),
+                Some(&json!({})),
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn ack_channel(&self, channel_id: &str, body: Value) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::POST,
+                &format!("/channels/{channel_id}/ack"),
+                Some(&body),
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn ack_guild(&self, guild_id: &str) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::POST,
+                &format!("/guilds/{guild_id}/ack"),
+                Some(&json!({})),
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn read_states(&self) -> Result<Value> {
+        self.request_json(reqwest::Method::GET, "/users/@me/read-states", None)
+            .await
+    }
+
+    pub async fn presign_attachment(&self, channel_id: &str, body: Value) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::POST,
+            &format!("/channels/{channel_id}/attachments/presign"),
+            Some(body),
+        )
+        .await
+    }
+
+    pub async fn upload_limit(&self, guild_id: &str) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::GET,
+            &format!("/guilds/{guild_id}/upload-limit"),
+            None,
+        )
+        .await
+    }
+
+    pub async fn search_messages(
+        &self,
+        query: &str,
+        guild_id: Option<&str>,
+        channel_id: Option<&str>,
+        limit: Option<u32>,
+    ) -> Result<Vec<Value>> {
+        let mut params = vec![format!("q={}", urlencoding::encode(query))];
+        if let Some(g) = guild_id {
+            params.push(format!("guild_id={}", urlencoding::encode(g)));
+        }
+        if let Some(c) = channel_id {
+            params.push(format!("channel_id={}", urlencoding::encode(c)));
+        }
+        if let Some(l) = limit {
+            params.push(format!("limit={l}"));
+        }
+        let raw = self
+            .request_json(
+                reqwest::Method::GET,
+                &format!("/search/messages?{}", params.join("&")),
+                None,
+            )
+            .await?;
+        Ok(json_array_field(&raw, "messages"))
+    }
+
+    // ---------- 语音扩展 ----------
+
+    pub async fn patch_self_voice_state(&self, body: Value) -> Result<()> {
+        let _: Option<Value> = self
+            .request(reqwest::Method::PATCH, "/voice/state", Some(&body))
+            .await?;
+        Ok(())
+    }
+
+    pub async fn voice_nodes(&self, guild_id: &str) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::GET,
+            &format!("/guilds/{guild_id}/voice/nodes"),
+            None,
+        )
+        .await
+    }
+
+    pub async fn voice_public_key(&self) -> Result<Value> {
+        self.request_json(reqwest::Method::GET, "/voice/public-key", None)
+            .await
+    }
+
+    // ---------- 舞台 / 屏幕 ----------
+
+    pub async fn voice_stage(&self, channel_id: &str) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::GET,
+            &format!("/channels/{channel_id}/voice-stage"),
+            None,
+        )
+        .await
+    }
+
+    pub async fn patch_voice_stage(&self, channel_id: &str, body: Value) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::PATCH,
+            &format!("/channels/{channel_id}/voice-stage"),
+            Some(body),
+        )
+        .await
+    }
+
+    pub async fn stage_queue(&self, channel_id: &str) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::GET,
+            &format!("/channels/{channel_id}/stage/queue"),
+            None,
+        )
+        .await
+    }
+
+    pub async fn stage_apply(&self, channel_id: &str) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::POST,
+                &format!("/channels/{channel_id}/stage/apply"),
+                Some(&json!({})),
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn stage_cancel_apply(&self, channel_id: &str) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::DELETE,
+                &format!("/channels/{channel_id}/stage/apply"),
+                None::<&Value>,
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn stage_bring_up(&self, channel_id: &str, body: Value) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::POST,
+                &format!("/channels/{channel_id}/stage/bring-up"),
+                Some(&body),
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn stage_bring_down(&self, channel_id: &str, body: Value) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::POST,
+                &format!("/channels/{channel_id}/stage/bring-down"),
+                Some(&body),
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn stage_self_leave(&self, channel_id: &str) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::POST,
+                &format!("/channels/{channel_id}/stage/self-leave"),
+                Some(&json!({})),
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn stage_remove_from_queue(&self, channel_id: &str, user_id: &str) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::DELETE,
+                &format!("/channels/{channel_id}/stage/queue/{user_id}"),
+                None::<&Value>,
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn screen_start(&self, channel_id: &str, body: Value) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::POST,
+            &format!("/channels/{channel_id}/voice/screen/start"),
+            Some(body),
+        )
+        .await
+    }
+
+    pub async fn screen_stop(&self, channel_id: &str) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::POST,
+                &format!("/channels/{channel_id}/voice/screen/stop"),
+                Some(&json!({})),
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn screen_stop_user(&self, channel_id: &str, body: Value) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::POST,
+                &format!("/channels/{channel_id}/voice/screen/stop-user"),
+                Some(&body),
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn screen_quota(&self, guild_id: &str) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::GET,
+            &format!("/guilds/{guild_id}/screen-quota"),
+            None,
+        )
+        .await
+    }
+
+    // ---------- 贴图 ----------
+
+    pub async fn my_sticker_packs(&self) -> Result<Value> {
+        self.request_json(reqwest::Method::GET, "/users/@me/sticker-packs", None)
+            .await
+    }
+
+    pub async fn create_sticker_pack(&self, body: Value) -> Result<Value> {
+        self.request_json(reqwest::Method::POST, "/users/@me/sticker-packs", Some(body))
+            .await
+    }
+
+    pub async fn patch_sticker_pack(&self, pack_id: &str, body: Value) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::PATCH,
+            &format!("/users/@me/sticker-packs/{pack_id}"),
+            Some(body),
+        )
+        .await
+    }
+
+    pub async fn delete_sticker_pack(&self, pack_id: &str) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::DELETE,
+                &format!("/users/@me/sticker-packs/{pack_id}"),
+                None::<&Value>,
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn sticker_library(&self) -> Result<Value> {
+        self.request_json(reqwest::Method::GET, "/users/@me/sticker-library", None)
+            .await
+    }
+
+    pub async fn install_sticker_pack(&self, pack_id: &str) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::PUT,
+                &format!("/users/@me/sticker-library/{pack_id}"),
+                Some(&json!({})),
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn uninstall_sticker_pack(&self, pack_id: &str) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::DELETE,
+                &format!("/users/@me/sticker-library/{pack_id}"),
+                None::<&Value>,
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn sticker_available(&self, guild_id: Option<&str>) -> Result<Value> {
+        let path = match guild_id {
+            Some(g) => format!(
+                "/users/@me/sticker-available?guild_id={}",
+                urlencoding::encode(g)
+            ),
+            None => "/users/@me/sticker-available".into(),
+        };
+        self.request_json(reqwest::Method::GET, &path, None).await
+    }
+
+    pub async fn sticker_pack(&self, pack_id: &str) -> Result<Value> {
+        self.request_json(reqwest::Method::GET, &format!("/sticker-packs/{pack_id}"), None)
+            .await
+    }
+
+    pub async fn sticker_item(&self, item_id: &str) -> Result<Value> {
+        self.request_json(reqwest::Method::GET, &format!("/sticker-items/{item_id}"), None)
+            .await
+    }
+
+    pub async fn sticker_pack_bans(&self, guild_id: &str) -> Result<Value> {
+        self.request_json(
+            reqwest::Method::GET,
+            &format!("/guilds/{guild_id}/sticker-pack-bans"),
+            None,
+        )
+        .await
+    }
+
+    pub async fn ban_sticker_pack(&self, guild_id: &str, pack_id: &str) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::PUT,
+                &format!("/guilds/{guild_id}/sticker-pack-bans/{pack_id}"),
+                Some(&json!({})),
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub async fn unban_sticker_pack(&self, guild_id: &str, pack_id: &str) -> Result<()> {
+        let _: Option<Value> = self
+            .request(
+                reqwest::Method::DELETE,
+                &format!("/guilds/{guild_id}/sticker-pack-bans/{pack_id}"),
+                None::<&Value>,
+            )
+            .await?;
+        Ok(())
+    }
+
+    /// multipart 字段 `file` 上传。
+    pub async fn upload_multipart(
+        &self,
+        method: reqwest::Method,
+        path: &str,
+        filename: &str,
+        data: Vec<u8>,
+    ) -> Result<Value> {
+        let part = reqwest::multipart::Part::bytes(data).file_name(filename.to_string());
+        let form = reqwest::multipart::Form::new().part("file", part);
+        let url = format!("{}{path}", self.api_base);
+        let response = self
+            .http
+            .request(method, &url)
+            .header("Authorization", format!("Bot {}", self.token))
+            .multipart(form)
+            .send()
+            .await?;
+        let status = response.status();
+        let text = response.text().await?;
+        if status.as_u16() == 204 {
+            return Ok(Value::Null);
+        }
+        if !status.is_success() {
+            let (code, message) = parse_api_error(&text);
+            return Err(Error::api(status.as_u16(), code, message));
+        }
+        if text.is_empty() {
+            return Ok(Value::Null);
+        }
+        Ok(serde_json::from_str(&text)?)
+    }
 }
 
 fn parse_api_error(text: &str) -> (String, String) {

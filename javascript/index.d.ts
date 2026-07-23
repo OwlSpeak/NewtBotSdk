@@ -174,5 +174,75 @@ export class OwlBotClient {
   leaveVoice(guildId: string): Promise<{ left: boolean }>
   refreshVoiceToken(guildId: string): Promise<{ token: string; caps: string[]; expires_at: number }>
   voiceStates(guildId: string, channelId: string): Promise<Array<Record<string, unknown>>>
+  reorderChannels(guildId: string, entries: unknown): Promise<void>
+  unlockChannel(channelId: string, password: string): Promise<Record<string, unknown>>
+  unlockStatus(channelId: string): Promise<Record<string, unknown>>
+  reorderRoles(guildId: string, entries: unknown): Promise<void>
+  uploadGuildIcon(guildId: string, file: Blob | ArrayBuffer | Uint8Array, filename?: string): Promise<Record<string, unknown>>
+  deleteGuildIcon(guildId: string): Promise<void>
+  uploadGuildBanner(guildId: string, file: Blob | ArrayBuffer | Uint8Array, filename?: string): Promise<Record<string, unknown>>
+  deleteGuildBanner(guildId: string): Promise<void>
+  banners(guildId: string): Promise<unknown>
+  addBanner(guildId: string, file: Blob | ArrayBuffer | Uint8Array, filename?: string): Promise<Record<string, unknown>>
+  reorderBanners(guildId: string, body: unknown): Promise<void>
+  removeBanner(guildId: string, bannerId: string): Promise<void>
+  updateNameStyle(guildId: string, memberId: string, body: Record<string, unknown>): Promise<Record<string, unknown>>
+  invite(code: string): Promise<Record<string, unknown>>
+  previewInvite(code: string): Promise<Record<string, unknown>>
+  deleteGuildInvite(guildId: string, code: string): Promise<void>
+  listEdits(channelId: string, messageId: string): Promise<unknown>
+  ackMessage(channelId: string, messageId: string): Promise<void>
+  ackChannel(channelId: string, body?: Record<string, unknown>): Promise<void>
+  ackGuild(guildId: string): Promise<void>
+  readStates(): Promise<unknown>
+  presignAttachment(channelId: string, body: Record<string, unknown>): Promise<Record<string, unknown>>
+  uploadAttachmentContent(attachmentId: string, data: BodyInit, contentType?: string): Promise<void>
+  uploadLimit(guildId: string): Promise<Record<string, unknown>>
+  voicePacks(guildId: string): Promise<unknown>
+  createVoicePack(guildId: string, body: Record<string, unknown>): Promise<Record<string, unknown>>
+  patchVoicePack(guildId: string, packId: string, body: Record<string, unknown>): Promise<Record<string, unknown>>
+  deleteVoicePack(guildId: string, packId: string): Promise<void>
+  uploadVoicePackAudio(guildId: string, packId: string, file: Blob | ArrayBuffer | Uint8Array, filename?: string): Promise<Record<string, unknown>>
+  selectVoicePack(guildId: string, packId: string): Promise<void>
+  myVoicePack(guildId: string): Promise<Record<string, unknown>>
+  clearMyVoicePack(guildId: string): Promise<void>
+  guildVoicePackConfig(guildId: string): Promise<Record<string, unknown>>
+  patchGuildVoicePackConfig(guildId: string, body: Record<string, unknown>): Promise<Record<string, unknown>>
+  channelVoicePackConfig(guildId: string, channelId: string): Promise<Record<string, unknown>>
+  putChannelVoicePackConfig(guildId: string, channelId: string, body: Record<string, unknown>): Promise<Record<string, unknown>>
+  patchSelfVoiceState(guildId: string, options?: { selfMute?: boolean; selfDeaf?: boolean }): Promise<void>
+  voiceNodes(guildId: string): Promise<unknown>
+  voicePublicKey(): Promise<Record<string, unknown>>
+  reportVoiceRtt(body: Record<string, unknown>): Promise<void>
+  reportIceFailed(body: Record<string, unknown>): Promise<void>
+  ackMigration(migrationId: string, body?: Record<string, unknown>): Promise<void>
+  stageQueue(channelId: string): Promise<unknown>
+  stageRemoveFromQueue(channelId: string, userId: string): Promise<void>
+  screenStart(channelId: string, body?: Record<string, unknown>): Promise<Record<string, unknown>>
+  screenStop(channelId: string): Promise<void>
+  screenStopUser(channelId: string, body: Record<string, unknown>): Promise<void>
+  screenQuota(guildId: string): Promise<Record<string, unknown>>
+  myStickerPacks(): Promise<unknown>
+  createStickerPack(body: Record<string, unknown>): Promise<Record<string, unknown>>
+  patchStickerPack(packId: string, body: Record<string, unknown>): Promise<Record<string, unknown>>
+  deleteStickerPack(packId: string): Promise<void>
+  restoreStickerPack(packId: string): Promise<void>
+  uploadStickerPackCover(packId: string, file: Blob | ArrayBuffer | Uint8Array, filename?: string): Promise<Record<string, unknown>>
+  deleteStickerPackCover(packId: string): Promise<void>
+  uploadStickerItem(packId: string, file: Blob | ArrayBuffer | Uint8Array, filename?: string): Promise<Record<string, unknown>>
+  patchStickerItem(packId: string, itemId: string, body: Record<string, unknown>): Promise<Record<string, unknown>>
+  deleteStickerItem(packId: string, itemId: string): Promise<void>
+  copyStickerItem(packId: string, body: Record<string, unknown>): Promise<Record<string, unknown>>
+  stickerLibrary(): Promise<unknown>
+  installStickerPack(packId: string): Promise<void>
+  uninstallStickerPack(packId: string): Promise<void>
+  stickerAvailable(guildId?: string): Promise<unknown>
+  stickerPack(packId: string): Promise<Record<string, unknown>>
+  stickerItem(itemId: string): Promise<Record<string, unknown>>
+  stickerPackBans(guildId: string): Promise<unknown>
+  banStickerPack(guildId: string, packId: string): Promise<void>
+  unbanStickerPack(guildId: string, packId: string): Promise<void>
+  uploadMultipart(method: string, path: string, file: Blob | ArrayBuffer | Uint8Array, filename?: string): Promise<unknown>
+  request(method: string, path: string, body?: unknown): Promise<unknown>
   connectGateway(): BotGateway
 }
