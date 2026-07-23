@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "owlspeak-bot"
+version = "0.1.0"
+description = "OwlSpeak 机器人开放平台官方 Python SDK"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+keywords = ["owlspeak", "owlbot", "bot", "sdk", "chat", "voice", "gateway"]
+authors = [{ name = "OwlSpeak" }]
+
+[project.optional-dependencies]
+gateway = ["websockets>=12"]
+
+[project.urls]
+Homepage = "https://github.com/owlspeak/OwlBotSdk"
+Documentation = "https://github.com/owlspeak/OwlBotSdk/blob/main/docs/API.md"
+Repository = "https://github.com/owlspeak/OwlBotSdk"
+
+[tool.setuptools]
+packages = ["owlspeak_bot"]

@@ -1,0 +1,31 @@
+[package]
+name = "owlspeak-bot"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+description = "OwlSpeak 机器人开放平台官方 Rust SDK"
+license = "MIT"
+readme = "README.md"
+keywords = ["owlspeak", "owlbot", "bot", "sdk", "chat", "gateway"]
+categories = ["api-bindings", "asynchronous", "network-programming"]
+repository = "https://github.com/owlspeak/OwlBotSdk"
+homepage = "https://github.com/owlspeak/OwlBotSdk/tree/main/rust"
+
+[dependencies]
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"] }
+tokio-tungstenite = { version = "0.24", features = ["rustls-tls-webpki-roots"] }
+futures-util = "0.3"
+uuid = { version = "1", features = ["v4"] }
+url = "2"
+urlencoding = "2"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+
+[lib]
+name = "owlspeak_bot"
+path = "src/lib.rs"

@@ -1,0 +1,39 @@
+{
+  "name": "@owlspeak/bot-sdk",
+  "version": "0.1.0",
+  "description": "OwlSpeak 机器人开放平台官方 JavaScript / TypeScript SDK（零依赖，Node >= 21）",
+  "type": "module",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "README.md"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=21"
+  },
+  "keywords": [
+    "owlspeak",
+    "owlbot",
+    "bot",
+    "sdk",
+    "chat",
+    "voice",
+    "gateway"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/owlspeak/OwlBotSdk.git",
+    "directory": "javascript"
+  },
+  "homepage": "https://github.com/owlspeak/OwlBotSdk/tree/main/javascript"
+}
