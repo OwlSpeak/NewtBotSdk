@@ -16,9 +16,9 @@ authors = [{ name = "OwlSpeak" }]
 gateway = ["websockets>=12"]
 
 [project.urls]
-Homepage = "https://github.com/owlspeak/OwlBotSdk"
-Documentation = "https://github.com/owlspeak/OwlBotSdk/blob/main/docs/API.md"
-Repository = "https://github.com/owlspeak/OwlBotSdk"
+Homepage = "https://github.com/OwlSpeak/OwlBotSdk"
+Documentation = "https://github.com/OwlSpeak/OwlBotSdk/blob/main/docs/API.md"
+Repository = "https://github.com/OwlSpeak/OwlBotSdk"
 
 [tool.setuptools]
 packages = ["owlspeak_bot"]

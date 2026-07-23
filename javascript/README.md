@@ -2,7 +2,7 @@
 
 OwlSpeak 机器人开放平台官方 JS SDK。零依赖，要求 Node ≥ 21（原生 `fetch` 与 `WebSocket`）。
 
-本包位于 monorepo **[OwlBotSdk](https://github.com/owlspeak/OwlBotSdk)** 的 `javascript/` 目录。
+本包位于 monorepo **[OwlBotSdk](https://github.com/OwlSpeak/OwlBotSdk)** 的 `javascript/` 目录。
 
 ## 安装
 

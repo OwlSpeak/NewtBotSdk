@@ -3,15 +3,15 @@
 OwlSpeak 机器人开放平台官方 Go SDK。可搭配 [pion/webrtc](https://github.com/pion/webrtc)
 实现完整的语音媒体收发（参考 Owl-SFU 仓库 `cmd/loadbot` 的信令时序）。
 
-本包位于 monorepo **[OwlBotSdk](https://github.com/owlspeak/OwlBotSdk)** 的 `go/` 目录。
+本包位于 monorepo **[OwlBotSdk](https://github.com/OwlSpeak/OwlBotSdk)** 的 `go/` 目录。
 
 ```bash
-go get github.com/owlspeak/owlbotsdk/go@latest
+go get github.com/OwlSpeak/OwlBotSdk/go@latest
 
 # 本地开发
 # go.mod:
-# require github.com/owlspeak/owlbotsdk/go v0.0.0
-# replace github.com/owlspeak/owlbotsdk/go => ../OwlBotSdk/go
+# require github.com/OwlSpeak/OwlBotSdk/go v0.0.0
+# replace github.com/OwlSpeak/OwlBotSdk/go => ../OwlBotSdk/go
 ```
 
 ## 快速上手
@@ -23,7 +23,7 @@ import (
 	"encoding/json"
 	"log"
 
-	owlbot "github.com/owlspeak/owlbotsdk/go"
+	owlbot "github.com/OwlSpeak/OwlBotSdk/go"
 )
 
 func main() {

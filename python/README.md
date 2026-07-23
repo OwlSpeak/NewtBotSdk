@@ -2,7 +2,7 @@
 
 OwlSpeak 机器人开放平台官方 Python SDK。REST 仅用标准库；Gateway 实时事件需可选依赖。
 
-本包位于 monorepo **[OwlBotSdk](https://github.com/owlspeak/OwlBotSdk)** 的 `python/` 目录。
+本包位于 monorepo **[OwlBotSdk](https://github.com/OwlSpeak/OwlBotSdk)** 的 `python/` 目录。
 
 ```bash
 pip install owlspeak-bot              # 发布后

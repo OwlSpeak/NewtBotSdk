@@ -32,8 +32,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/owlspeak/OwlBotSdk.git",
+    "url": "https://github.com/OwlSpeak/OwlBotSdk.git",
     "directory": "javascript"
   },
-  "homepage": "https://github.com/owlspeak/OwlBotSdk/tree/main/javascript"
+  "homepage": "https://github.com/OwlSpeak/OwlBotSdk/tree/main/javascript"
 }

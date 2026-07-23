@@ -5,7 +5,7 @@ OwlSpeak 机器人开放平台 **官方多语言 SDK**  monorepo。
 | 语言 | 目录 | 包名 | 依赖特点 |
 |------|------|------|----------|
 | **JavaScript / TypeScript** | [`javascript/`](javascript/) | `@owlspeak/bot-sdk` | 零依赖，Node ≥ 21 原生 `fetch` + `WebSocket` |
-| **Go** | [`go/`](go/) | `github.com/owlspeak/owlbotsdk/go` | `uuid` + `gorilla/websocket` |
+| **Go** | [`go/`](go/) | `github.com/OwlSpeak/OwlBotSdk/go` | `uuid` + `gorilla/websocket` |
 | **Python** | [`python/`](python/) | `owlspeak-bot` | REST 标准库；Gateway 可选 `websockets` |
 | **Rust** | [`rust/`](rust/) | `owlspeak-bot` | `reqwest` + `tokio` + `tokio-tungstenite` |
 
@@ -61,13 +61,13 @@ gw.on("MESSAGE_CREATE", (msg) => console.log(msg.content))
 **Go**
 
 ```bash
-go get github.com/owlspeak/owlbotsdk/go@latest
+go get github.com/OwlSpeak/OwlBotSdk/go@latest
 # 本地开发：
-# go.mod 中 replace github.com/owlspeak/owlbotsdk/go => ../OwlBotSdk/go
+# go.mod 中 replace github.com/OwlSpeak/OwlBotSdk/go => ../OwlBotSdk/go
 ```
 
 ```go
-import owlbot "github.com/owlspeak/owlbotsdk/go"
+import owlbot "github.com/OwlSpeak/OwlBotSdk/go"
 
 bot := owlbot.New("https://owl.example.com", os.Getenv("OWL_BOT_TOKEN"))
 _, _ = bot.SendText(channelID, "你好！")
@@ -130,7 +130,7 @@ OwlBotSdk/
 ├── LICENSE                   # MIT
 ├── docs/API.md               # 完整 HTTP / Gateway 协议
 ├── javascript/               # @owlspeak/bot-sdk
-├── go/                       # github.com/owlspeak/owlbotsdk/go
+├── go/                       # github.com/OwlSpeak/OwlBotSdk/go
 ├── python/                   # owlspeak-bot
 ├── rust/                     # owlspeak-bot (crates.io 风格)
 └── examples/                 # 各语言最小可运行示例

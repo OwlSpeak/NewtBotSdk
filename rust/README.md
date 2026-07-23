@@ -6,7 +6,7 @@ OwlSpeak 机器人开放平台官方 Rust SDK。异步 REST（`reqwest` + `tokio
 
 ```toml
 [dependencies]
-owlspeak-bot = { git = "https://github.com/owlspeak/OwlBotSdk", path = "rust" }
+owlspeak-bot = { git = "https://github.com/OwlSpeak/OwlBotSdk", path = "rust" }
 # 或本地路径：
 # owlspeak-bot = { path = "../rust" }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
