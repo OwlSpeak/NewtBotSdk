@@ -44,6 +44,37 @@ async def on_event(event, data):
 asyncio.run(run_gateway(bot, on_event))
 ```
 
+## 按钮交互与 ephemeral
+
+```python
+from owlspeak_bot import Interaction
+
+# 1. 发带交互按钮的卡片（custom_id 触发 INTERACTION_CREATE；url 为链接按钮）
+bot.send_card(channel_id, {
+    "title": "发布 v1.4.2？",
+    "buttons": [
+        {"label": "批准", "custom_id": "approve:42", "style": "success"},
+        {"label": "拒绝", "custom_id": "reject:42", "style": "danger"},
+        {"label": "查看日志", "url": "https://ci.example.com/run/42"},
+    ],
+})
+
+# 2. ephemeral 消息：仅指定用户 + bot 自己可见
+bot.send_ephemeral(channel_id, user_id, "只有你能看到这条提示", card={"title": "私密提示"})
+
+# 3. 处理按钮点击（15 分钟内回应；reply 缺省 ephemeral=True）
+async def on_event(event, data):
+    if event == "interaction":  # INTERACTION_CREATE 的 Interaction 包装
+        interaction: Interaction = data
+        if interaction.custom_id == "approve:42":
+            interaction.update_message(card={"title": "已批准 ✅"})
+        else:
+            interaction.reply("已驳回")  # 仅点击者可见
+        # 耗时任务可先 interaction.ack()，稍后再 reply / update_message 一次（defer 模式）
+
+asyncio.run(run_gateway(bot, on_event))
+```
+
 ## 语音接入
 
 ```python
@@ -84,5 +115,8 @@ asyncio.run(run_gateway(bot, on_event))
 
 相关 API：`roles` / `create_role` / `add_member_role` / `remove_member_role` / `member` /
 `set_overwrite` / `list_reaction_users`。安装后需给 bot 绑定带 `MANAGE_ROLES` 的角色。
+
+消息 / 交互相关：`send_message(visible_to_user_ids=...)` / `send_ephemeral` /
+`Interaction.ack()` / `reply(content, card=..., ephemeral=True)` / `update_message(content, card=...)`。
 
 完整协议文档见 [`../README.md`](../README.md)。

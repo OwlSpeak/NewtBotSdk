@@ -2,7 +2,7 @@
 
 模块：`github.com/OwlSpeak/OwlBotSdk/go`（`package owlbot`）
 
-共 **144** 个 `Client` 方法（含文件路径便捷封装）。
+共 **146** 个 `Client` 方法（含文件路径便捷封装）。
 
 生成自源码 `func (c *Client)`；完整 HTTP 语义见 [API.md](./API.md)。
 
@@ -91,11 +91,13 @@
 - `GetMessages`
 - `ListEdits`
 - `ListReactionUsers`
+- `ParseInteraction`
 - `PresignAttachment`
 - `ReadStates`
 - `RemoveReaction`
 - `SearchMessages`
 - `SendCard`
+- `SendEphemeral`
 - `SendMessage`
 - `SendText`
 - `StartStream`
@@ -177,6 +179,16 @@
 - `UploadGuildBannerFile`
 - `UploadGuildIconFile`
 - `UploadLimit`
+
+## 交互（按钮点击）
+
+`Client` 侧：`ParseInteraction`、`SendEphemeral`（见「消息」）。非 `Client` 方法：
+
+- `Gateway.OnInteraction`（INTERACTION_CREATE → `*Interaction` 包装分发）
+- `Interaction.Ack`
+- `Interaction.Reply`
+- `Interaction.ReplyText`
+- `Interaction.UpdateMessage`
 
 ## 其它 / Raw
 

@@ -47,7 +47,7 @@ OwlSpeak 为机器人提供独立的开放 API 平面（`/bot-api/v1`），配�
 | Emoji / Sticker | ✅ 贴图包体系 | 自建包 + 服 ban（`MANAGE_EXPRESSIONS` 等） |
 | Gateway events | ✅ | 与用户端同事件集，按可见性过滤 |
 | Webhooks | ❌ 产品未实现 | 权限位 `MANAGE_WEBHOOKS` 预留 |
-| Slash Commands / Interactions | ❌ 产品未实现 | 权限位 `USE_APPLICATION_COMMANDS` 预留 |
+| Slash Commands / Interactions | ✅ 按钮交互（Owl 扩展） | 卡片 `buttons[].custom_id` + `INTERACTION_CREATE` + callback 回应；Slash Commands 未实现，权限位 `USE_APPLICATION_COMMANDS` 预留 |
 | Message Pin / Thread | ❌ 消息二期 | — |
 | Guild scheduled events | ❌ 未实现 | — |
 
@@ -101,7 +101,8 @@ OwlSpeak 为机器人提供独立的开放 API 平面（`/bot-api/v1`），配�
 
 | 方法 | 路径 | 说明 |
 |---|---|---|
-| POST/GET | `/channels/{cid}/messages` | 发消息 / 拉历史 |
+| POST/GET | `/channels/{cid}/messages` | 发消息 / 拉历史；body 可带 `visible_to_user_ids`（ephemeral，见下） |
+| POST | `/interactions/{id}/callback` | 回应按钮点击（见 [Interactions](#interactions按钮交互owl-扩展)） |
 | GET/PATCH/DELETE | `/channels/{cid}/messages/{mid}` | 详情 / 编辑 / 删除 |
 | PUT/DELETE | `.../reactions/{emoji}/@me` | 反应 |
 | GET | `.../reactions/{emoji}` | 反应者列表 |
@@ -144,7 +145,8 @@ S→C DISPATCH {t, d}
 事件与用户端一致（按频道可见性过滤），含：
 `MESSAGE_*`、`MESSAGE_REACTION_*`、`MESSAGE_STREAM_*`、`TYPING_START`、
 `GUILD_*`、`GUILD_MEMBER_*`、`GUILD_ROLE_*`、`CHANNEL_*`、`PERMISSIONS_UPDATE`、
-`VOICE_STATE_UPDATE`、`VOICE_CAPS_UPDATE` 等。
+`VOICE_STATE_UPDATE`、`VOICE_CAPS_UPDATE` 等；bot 专属事件 `INTERACTION_CREATE`
+（自己消息上的按钮被点击，见 [Interactions](#interactions按钮交互owl-扩展)）。
 
 反应事件载荷：
 
@@ -172,7 +174,7 @@ gw.on("MESSAGE_REACTION_ADD", async (ev) => {
 
 ### 卡片（card）载荷
 
-服务端只校验「JSON 对象、≤8KB」。推荐结构：
+服务端只校验「JSON 对象、≤8KB」（`buttons` 字段除外，见下）。推荐结构：
 
 ```json
 {
@@ -180,9 +182,117 @@ gw.on("MESSAGE_REACTION_ADD", async (ev) => {
   "description": "版本 v1.4.2 已发布",
   "color": "#22c55e",
   "fields": [{ "name": "耗时", "value": "42s", "inline": true }],
+  "buttons": [
+    { "label": "查看日志", "url": "https://ci.example.com/run/42" },
+    { "label": "批准", "custom_id": "approve:42", "style": "success" },
+    { "label": "拒绝", "custom_id": "reject:42", "style": "danger", "row": 1 }
+  ],
   "footer": "CI Bot"
 }
 ```
+
+#### `card.buttons` schema（服务端校验）
+
+每消息 ≤25 个按钮；按钮元素字段：
+
+| 字段 | 类型 | 约束 |
+|---|---|---|
+| `label` | string | 必填，1-40 字 |
+| `url` | string | 链接按钮；与 `custom_id` 二选一互斥、必居其一 |
+| `custom_id` | string | 交互按钮，点击触发 `INTERACTION_CREATE`；消息内唯一，字符集 `[A-Za-z0-9_\-:.]`，1-64 字符 |
+| `style` | string | `primary` / `secondary` / `success` / `danger`，缺省 `secondary` |
+| `size` | string | `xs` / `sm` / `md` / `lg`，缺省 `sm` |
+| `disabled` | bool | 可选 |
+| `row` | int | 0-4，可选 |
+| `visible_to` | object | 可选；`{users: [uuid]≤20, roles: [uuid]≤10}` 按钮级可见性白名单 |
+
+旧格式 `{label, url}` 保持兼容。
+
+### ephemeral 消息（Owl 扩展）
+
+`POST /channels/{cid}/messages` body 可带可选字段 `visible_to_user_ids: ["uuid"]`（≤20）。
+带此字段即 ephemeral：**仅名单用户 + bot 自己可见**；约束：不能带附件（`attachment_ids`）。
+
+SDK 语法糖：JS `sendEphemeral(channelId, userId, content, {card?})`、
+Go `SendEphemeral(channelID, userID, content, card)`、
+Python `send_ephemeral(channel_id, user_id, content, card=...)`、
+Rust `send_ephemeral(channel_id, user_id, content, card)`。
+
+### Interactions（按钮交互，Owl 扩展）
+
+#### 点击流程
+
+1. bot 发含 `buttons[].custom_id` 的卡片消息；
+2. 用户点击按钮 → 服务端在 **bot 的 Gateway 连接** 上派发 `DISPATCH t="INTERACTION_CREATE"`（按钮转圈等待回应）；
+3. bot 在 15 分钟内携带一次性 token 调 callback 端点回应：`ack`（可稍后再补一次 `reply`/`update_message`，即 defer 模式）、`reply` 或 `update_message`。
+
+#### 事件 payload（`t="INTERACTION_CREATE"`）
+
+```json
+{
+  "id": "1234567890123456789",
+  "token": "owlint_xxx",
+  "guild_id": "<uuid>",
+  "channel_id": "<uuid>",
+  "message_id": "9876543210",
+  "custom_id": "approve:42",
+  "member": { "user_id": "<uuid>", "username": "alice", "roles": ["<uuid>"] },
+  "expires_at": "2026-07-26T12:15:00Z"
+}
+```
+
+- `id`：交互 ID（雪花）；`token`：一次性回应令牌（`owlint_...`）；
+- `expires_at`：创建 +15 分钟，过期后回应返回 410。
+
+#### callback 端点
+
+```text
+POST /bot-api/v1/interactions/{interactionID}/callback
+Authorization: Bot <token>   （鉴权同其他 bot API）
+```
+
+Body：
+
+```json
+{
+  "token": "owlint_...",
+  "type": "ack | reply | update_message",
+  "content": "可选",
+  "card": {},
+  "ephemeral": true
+}
+```
+
+| type | 语义 |
+|---|---|
+| `ack` | 仅确认（用户按钮停止转圈）；之后仍可再 `reply` / `update_message` 一次（defer 模式） |
+| `reply` | 以 bot 身份在原频道发新消息；`ephemeral` 缺省 `true`（仅点击者可见）；响应体返回新消息对象 |
+| `update_message` | 更新原消息的 `card` 和/或 `content` |
+
+#### 错误码
+
+| HTTP | code | 含义 |
+|---|---|---|
+| 404 | — | token 不符 / 交互不属于本 bot |
+| 410 | `INTERACTION_EXPIRED` | 超过 15 分钟未回应 |
+| 409 | `ALREADY_RESPONDED` | 已回应过（ack 后最多再补一次） |
+
+#### SDK 用法（JS）
+
+```js
+const gw = bot.connectGateway()
+gw.on("interaction", async (interaction) => {
+  if (interaction.customId.startsWith("approve:")) {
+    await interaction.updateMessage({ card: { title: "已批准 ✅" } })
+  } else {
+    await interaction.reply("已收到", { ephemeral: true }) // 默认即 ephemeral
+  }
+})
+```
+
+各语言等价 API：Go `gw.OnInteraction(func(i *owlbot.Interaction){...})` /
+`Client.ParseInteraction`；Python `on_event("interaction", interaction)` 包装回调；
+Rust `HandlerMap::on_interaction(client, |interaction| {...})` / `Interaction::from_value`。
 
 ## 管理 API（后台 `/api/v1`，管理员 JWT）
 
@@ -213,6 +323,7 @@ gw.on("MESSAGE_REACTION_ADD", async (ev) => {
 - 服务器 / 频道 / 角色 / 权限覆盖 / 图标横幅  
 - 成员治理 / 邀请 / Restriction / 审计  
 - 消息、反应、已读 ack、附件 presign、搜索、流式  
+- 按钮交互（`INTERACTION_CREATE` → callback）与 ephemeral 消息  
 - 入场语音包、语音进房与管理、舞台与屏幕共享  
 - 贴图包 / 库 / 服 ban  
 - Gateway  

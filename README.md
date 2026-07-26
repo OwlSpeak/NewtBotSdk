@@ -15,14 +15,14 @@ OwlSpeak 机器人开放平台 **官方多语言 SDK**  monorepo。
 |------|------|
 | [`docs/API.md`](docs/API.md) | HTTP / Gateway 协议与能力矩阵 |
 | [`docs/COVERAGE.md`](docs/COVERAGE.md) | 服务端挂载 ↔ SDK 覆盖 |
-| [`docs/METHODS.md`](docs/METHODS.md) | Go `Client` 公开方法目录（144+） |
+| [`docs/METHODS.md`](docs/METHODS.md) | Go `Client` 公开方法目录（146+） |
 
 ---
 
 ## 设计原则
 
 1. **bot 即成员**：权限与人类同一套 RBAC，不另开特权通道。  
-2. **四语言 API 面一致**：消息、角色、反应角色、成员治理、邀请、Restriction、语音、Gateway。  
+2. **四语言 API 面一致**：消息（含按钮交互 / ephemeral）、角色、反应角色、成员治理、邀请、Restriction、语音、Gateway。  
 3. **与 Discord Bot 能力对齐**（在 OwlSpeak 已实现产品范围内）。  
 
 认证：

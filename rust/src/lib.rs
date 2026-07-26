@@ -37,7 +37,9 @@
 mod client;
 mod error;
 mod gateway;
+mod interaction;
 
 pub use client::Client;
 pub use error::{Error, Result};
 pub use gateway::{connect as connect_gateway, EventHandler, Gateway, HandlerMap};
+pub use interaction::{Interaction, InteractionMember};

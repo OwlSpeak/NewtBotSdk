@@ -19,6 +19,8 @@
 | Restriction 全套 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | 审计日志 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | 消息 CRUD/反应/打字/搜索 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| ephemeral 消息（visible_to_user_ids） | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 按钮交互（INTERACTION_CREATE + callback） | ✅ | ✅ | ✅ | ✅ | ✅ |
 | 消息编辑历史 / ack / 已读 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | 附件 presign/upload-limit | ✅ | ✅ | ✅ | ✅ | ✅ |
 | 流式消息 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -28,5 +30,13 @@
 | 贴图包/库/服 ban | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Gateway | ✅ | ✅ | ✅ | ✅ | ✅ |
 | 后台创建 bot/token（/api/v1） | ❌ 非 bot token | — | — | — | — |
+
+## 按钮交互 / ephemeral 各语言新方法
+
+| 能力 | JS | Go | Python | Rust |
+|------|----|----|--------|------|
+| ephemeral 发送 | `sendEphemeral` · `sendMessage({visibleToUserIds})` | `SendEphemeral` · `SendMessageOptions.VisibleToUserIDs` | `send_ephemeral` · `send_message(visible_to_user_ids=...)` | `send_ephemeral` · `send_message` 带 `visible_to_user_ids` |
+| 交互事件订阅 | `gw.on("interaction", handler)` | `gw.OnInteraction(func(*Interaction))` | `on_event("interaction", interaction)` 包装回调 | `HandlerMap::on_interaction(client, handler)` |
+| 交互对象与回应 | `Interaction`：`ack()` / `reply()` / `updateMessage()` | `Interaction`：`Ack` / `Reply` / `ReplyText` / `UpdateMessage`（`Client.ParseInteraction` 解析） | `Interaction`：`ack()` / `reply()` / `update_message()` | `Interaction`：`ack` / `reply` / `update_message`（`Interaction::from_value` 解析） |
 
 最后校验：与 `internal/botapi/register.go` 挂载模块同步。

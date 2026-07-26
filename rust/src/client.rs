@@ -493,6 +493,27 @@ impl Client {
         self.send_message(channel_id, json!({ "card": card })).await
     }
 
+    /// 发送 ephemeral 消息（语法糖）：仅 `user_id` 与 bot 自己可见；card 可为 `None`。
+    ///
+    /// 底层为 `visible_to_user_ids` 字段（≤20 个 user_id，不能带附件），
+    /// 需要多个可见用户时直接用 [`send_message`](Self::send_message) 传该字段。
+    pub async fn send_ephemeral(
+        &self,
+        channel_id: &str,
+        user_id: &str,
+        content: &str,
+        card: Option<Value>,
+    ) -> Result<Value> {
+        let mut body = json!({
+            "content": content,
+            "visible_to_user_ids": [user_id],
+        });
+        if let Some(card) = card {
+            body["card"] = card;
+        }
+        self.send_message(channel_id, body).await
+    }
+
     pub async fn get_messages(
         &self,
         channel_id: &str,

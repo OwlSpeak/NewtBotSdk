@@ -2,6 +2,7 @@
 
 use crate::client::Client;
 use crate::error::{Error, Result};
+use crate::interaction::Interaction;
 use futures_util::{SinkExt, StreamExt};
 use serde_json::Value;
 use std::collections::HashMap;
@@ -46,6 +47,21 @@ impl HandlerMap {
         map.entry(event.into())
             .or_default()
             .push(Arc::new(handler));
+    }
+
+    /// 注册按钮点击回调：`INTERACTION_CREATE` 载荷自动包装成 [`Interaction`]。
+    ///
+    /// 需要传入 `Client`（用于回应 callback 端点）；解析失败的载荷会被忽略。
+    pub async fn on_interaction<F>(&self, client: Client, handler: F)
+    where
+        F: Fn(Interaction) + Send + Sync + 'static,
+    {
+        self.on("INTERACTION_CREATE", move |_, payload| {
+            if let Ok(interaction) = Interaction::from_value(client.clone(), payload) {
+                handler(interaction);
+            }
+        })
+        .await;
     }
 
     async fn emit(&self, event: &str, payload: Value) {
