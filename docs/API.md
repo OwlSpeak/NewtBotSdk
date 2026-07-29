@@ -290,7 +290,7 @@ gw.on("interaction", async (interaction) => {
 })
 ```
 
-各语言等价 API：Go `gw.OnInteraction(func(i *owlbot.Interaction){...})` /
+各语言等价 API：Go `gw.OnInteraction(func(i *newtbot.Interaction){...})` /
 `Client.ParseInteraction`；Python `on_event("interaction", interaction)` 包装回调；
 Rust `HandlerMap::on_interaction(client, |interaction| {...})` / `Interaction::from_value`。
 

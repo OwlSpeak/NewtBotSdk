@@ -1,4 +1,4 @@
-// Package owlbot 是 NewtSpeak 机器人开放平台的官方 Go SDK。
+// Package newtbot 是 NewtSpeak 机器人开放平台的官方 Go SDK。
 //
 // # 认证
 //
@@ -22,7 +22,7 @@
 //	client.Raw("GET", "/guilds/"+gid+"/roles", nil, &out)
 //
 // 语音媒体层可搭配 pion/webrtc（Media Token 含 bot=true claim）。
-package owlbot
+package newtbot
 
 import (
 	"bytes"

@@ -62,8 +62,8 @@ Gateway:  wss://<server>/bot-api/v1/gateway
 ```
 
 ```js
-import { OwlBotClient } from "@newtspeak/bot-sdk"
-const bot = new OwlBotClient({
+import { NewtBotClient } from "@newtspeak/bot-sdk"
+const bot = new NewtBotClient({
   baseUrl: "https://newt-panel.example.com",
   token: process.env.NEWT_BOT_TOKEN,
 })
@@ -80,10 +80,10 @@ go get github.com/NewtSpeak/NewtBotSdk/go@latest
 ```
 
 ```go
-bot := owlbot.New("https://newt-panel.example.com", os.Getenv("NEWT_BOT_TOKEN"))
+bot := newtbot.New("https://newt-panel.example.com", os.Getenv("NEWT_BOT_TOKEN"))
 _, _ = bot.SendText(channelID, "你好！")
 gw := bot.ConnectGateway()
-gw.OnInteraction(func(i *owlbot.Interaction) { _, _ = i.ReplyText("收到") })
+gw.OnInteraction(func(i *newtbot.Interaction) { _, _ = i.ReplyText("收到") })
 ```
 
 **Python**
@@ -93,8 +93,8 @@ pip install -e "./python[gateway]"
 ```
 
 ```python
-from newtspeak_bot import OwlBotClient, run_gateway
-bot = OwlBotClient("https://newt-panel.example.com", token=os.environ["NEWT_BOT_TOKEN"])
+from newtspeak_bot import NewtBotClient, run_gateway
+bot = NewtBotClient("https://newt-panel.example.com", token=os.environ["NEWT_BOT_TOKEN"])
 bot.send_message(channel_id, "你好！")
 asyncio.run(run_gateway(bot, on_event))
 ```

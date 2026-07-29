@@ -16,9 +16,9 @@ pip install -e "./python[gateway]"
 
 ```python
 import asyncio
-from newtspeak_bot import OwlBotClient, run_gateway
+from newtspeak_bot import NewtBotClient, run_gateway
 
-bot = OwlBotClient("https://newt.example.com", token="newtbot_xxx")
+bot = NewtBotClient("https://newt.example.com", token="newtbot_xxx")
 
 # 普通消息 / 卡片消息
 bot.send_message(channel_id, "你好！")

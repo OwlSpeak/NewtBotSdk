@@ -8,9 +8,9 @@
  *   node examples/javascript/reaction-role.mjs
  */
 
-import { OwlBotClient } from "../../javascript/index.js"
+import { NewtBotClient } from "../../javascript/index.js"
 
-const bot = new OwlBotClient({
+const bot = new NewtBotClient({
   baseUrl: process.env.NEWT_BASE_URL,
   token: process.env.NEWT_BOT_TOKEN,
 })

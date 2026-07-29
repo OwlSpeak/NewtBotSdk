@@ -17,9 +17,9 @@ npm install @newtspeak/bot-sdk
 ## 快速上手：一个会流式回复的 AI 机器人
 
 ```js
-import { OwlBotClient } from "@newtspeak/bot-sdk"
+import { NewtBotClient } from "@newtspeak/bot-sdk"
 
-const bot = new OwlBotClient({
+const bot = new NewtBotClient({
   baseUrl: "https://newt.example.com",
   token: process.env.NEWT_BOT_TOKEN, // newtbot_xxx，控制台签发
 })

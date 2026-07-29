@@ -6,7 +6,7 @@
 import unittest
 from unittest.mock import patch
 
-from newtspeak_bot import Interaction, OwlBotClient
+from newtspeak_bot import Interaction, NewtBotClient
 
 SAMPLE_PAYLOAD = {
     "id": "1234567890123456789",
@@ -22,7 +22,7 @@ SAMPLE_PAYLOAD = {
 
 class InteractionTest(unittest.TestCase):
     def setUp(self):
-        self.client = OwlBotClient("https://newt.example.com", "newtbot_test")
+        self.client = NewtBotClient("https://newt.example.com", "newtbot_test")
 
     def test_fields(self):
         interaction = Interaction(self.client, SAMPLE_PAYLOAD)
@@ -35,7 +35,7 @@ class InteractionTest(unittest.TestCase):
 
     def test_ack_reply_update(self):
         interaction = Interaction(self.client, SAMPLE_PAYLOAD)
-        with patch.object(OwlBotClient, "_request", return_value={"id": "m1"}) as mock:
+        with patch.object(NewtBotClient, "_request", return_value={"id": "m1"}) as mock:
             interaction.ack()
             method, path, body = mock.call_args.args
             self.assertEqual(method, "POST")
@@ -61,16 +61,16 @@ class InteractionTest(unittest.TestCase):
 
 class EphemeralTest(unittest.TestCase):
     def test_send_ephemeral_body(self):
-        client = OwlBotClient("https://newt.example.com", "newtbot_test")
-        with patch.object(OwlBotClient, "_request", return_value={"id": "m1"}) as mock:
+        client = NewtBotClient("https://newt.example.com", "newtbot_test")
+        with patch.object(NewtBotClient, "_request", return_value={"id": "m1"}) as mock:
             client.send_ephemeral("channel-uuid", "user-uuid", "仅你可见")
             _, path, body = mock.call_args.args
             self.assertEqual(path, "/channels/channel-uuid/messages")
             self.assertEqual(body["visible_to_user_ids"], ["user-uuid"])
 
     def test_send_message_omits_field_by_default(self):
-        client = OwlBotClient("https://newt.example.com", "newtbot_test")
-        with patch.object(OwlBotClient, "_request", return_value={"id": "m1"}) as mock:
+        client = NewtBotClient("https://newt.example.com", "newtbot_test")
+        with patch.object(NewtBotClient, "_request", return_value={"id": "m1"}) as mock:
             client.send_message("channel-uuid", "hi")
             _, _, body = mock.call_args.args
             self.assertNotIn("visible_to_user_ids", body)  # 兼容旧服务端

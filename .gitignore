@@ -39,4 +39,4 @@ Cargo.lock
 .env
 .env.*
 *.pem
-owlbot_*
+newtbot_*

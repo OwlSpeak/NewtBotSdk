@@ -1,4 +1,4 @@
-# owlbot（Go SDK）
+# newtbot（Go SDK）
 
 NewtSpeak 机器人开放平台官方 Go SDK。可搭配 [pion/webrtc](https://github.com/pion/webrtc)
 实现完整的语音媒体收发（参考 Newt-SFU 仓库 `cmd/loadbot` 的信令时序）。
@@ -23,16 +23,16 @@ import (
 	"encoding/json"
 	"log"
 
-	owlbot "github.com/NewtSpeak/NewtBotSdk/go"
+	newtbot "github.com/NewtSpeak/NewtBotSdk/go"
 )
 
 func main() {
-	bot := owlbot.New("https://newt.example.com", "newtbot_xxx")
+	bot := newtbot.New("https://newt.example.com", "newtbot_xxx")
 
 	// 实时事件
 	gw := bot.ConnectGateway()
 	gw.On("MESSAGE_CREATE", func(payload json.RawMessage) {
-		var msg owlbot.Message
+		var msg newtbot.Message
 		_ = json.Unmarshal(payload, &msg)
 		if msg.AuthorIsBot {
 			return // 防自我循环
@@ -78,7 +78,7 @@ _, _ = bot.SendCard(channelID, map[string]any{
 _, _ = bot.SendEphemeral(channelID, userID, "只有你能看到这条提示", nil)
 
 // 3. 处理按钮点击（15 分钟内回应；Reply 缺省 ephemeral）
-gw.OnInteraction(func(interaction *owlbot.Interaction) {
+gw.OnInteraction(func(interaction *newtbot.Interaction) {
 	if interaction.CustomID == "approve:42" {
 		_ = interaction.UpdateMessage("", map[string]any{"title": "已批准 ✅"})
 	} else {

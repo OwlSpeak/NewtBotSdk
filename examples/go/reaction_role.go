@@ -8,11 +8,11 @@ import (
 	"log"
 	"os"
 
-	owlbot "github.com/NewtSpeak/NewtBotSdk/go"
+	newtbot "github.com/NewtSpeak/NewtBotSdk/go"
 )
 
 func main() {
-	bot := owlbot.New(os.Getenv("NEWT_BASE_URL"), os.Getenv("NEWT_BOT_TOKEN"))
+	bot := newtbot.New(os.Getenv("NEWT_BASE_URL"), os.Getenv("NEWT_BOT_TOKEN"))
 	rulesMessageID := os.Getenv("RULES_MESSAGE_ID")
 	verifiedRoleID := os.Getenv("VERIFIED_ROLE_ID")
 
