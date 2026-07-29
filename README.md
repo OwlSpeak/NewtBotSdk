@@ -1,84 +1,89 @@
 # OwlBotSdk
 
-OwlSpeak 机器人开放平台 **官方多语言 SDK**  monorepo。
+OwlSpeak **机器人开放平台官方 SDK**（多语言 monorepo）。  
+用 **bot token** 调用 Server 的 `/bot-api/v1`，在 RBAC 权限内实现自动化：消息、反应角色、卡片按钮、治理、语音进房等。
 
-| 语言 | 目录 | 包名 | 依赖特点 |
-|------|------|------|----------|
-| **JavaScript / TypeScript** | [`javascript/`](javascript/) | `@owlspeak/bot-sdk` | 零依赖，Node ≥ 21 原生 `fetch` + `WebSocket` |
-| **Go** | [`go/`](go/) | `github.com/OwlSpeak/OwlBotSdk/go` | `uuid` + `gorilla/websocket` |
+> **bot 即成员**：`User(IsBot=true)` + 角色权限，与人类同一套规则，无特权通道。
+
+```text
+你的 Bot 进程  ── OwlBotSdk ──►  https://<server>/bot-api/v1
+                              wss://<server>/bot-api/v1/gateway
+权限与事件过滤由 Owl-Server 裁决
+```
+
+与 [Owl-Agent](https://github.com/OwlSpeak/Owl-Agent) 的区别：Agent 是 **真人 OAuth** 运维/AI 入口；本仓是 **机器人身份** 的程序化 API。
+
+## 语言与包
+
+| 语言 | 目录 | 包名 | 特点 |
+|------|------|------|------|
+| **JavaScript / TypeScript** | [`javascript/`](javascript/) | `@owlspeak/bot-sdk` | 零依赖；Node ≥ 21（原生 fetch / WebSocket） |
+| **Go** | [`go/`](go/) | `github.com/OwlSpeak/OwlBotSdk/go` | Gateway + 可接 pion 语音 |
 | **Python** | [`python/`](python/) | `owlspeak-bot` | REST 标准库；Gateway 可选 `websockets` |
-| **Rust** | [`rust/`](rust/) | `owlspeak-bot` | `reqwest` + `tokio` + `tokio-tungstenite` |
+| **Rust** | [`rust/`](rust/) | `owlspeak-bot` | `reqwest` + `tokio` + tungstenite |
 
-文档：
+四语言 API 面 intentionally 对齐：消息（含 ephemeral / 流式 / 按钮交互）、角色、成员治理、邀请、Restriction、语音、贴图、Gateway。
 
-| 文档 | 内容 |
+## 能力摘要
+
+| 能力 | 说明 |
 |------|------|
-| [`docs/API.md`](docs/API.md) | HTTP / Gateway 协议与能力矩阵 |
-| [`docs/COVERAGE.md`](docs/COVERAGE.md) | 服务端挂载 ↔ SDK 覆盖 |
-| [`docs/METHODS.md`](docs/METHODS.md) | Go `Client` 公开方法目录（146+） |
-
----
-
-## 设计原则
-
-1. **bot 即成员**：权限与人类同一套 RBAC，不另开特权通道。  
-2. **四语言 API 面一致**：消息（含按钮交互 / ephemeral）、角色、反应角色、成员治理、邀请、Restriction、语音、Gateway。  
-3. **与 Discord Bot 能力对齐**（在 OwlSpeak 已实现产品范围内）。  
+| REST | 服/频道/角色/成员/消息/邀请/限制/审计/贴图… |
+| Gateway | 与用户端同源事件（按可见性过滤）+ `INTERACTION_CREATE` |
+| 卡片按钮 | `custom_id` 交互 + `url` 链接；15 分钟内 callback |
+| 流式消息 | 对接 LLM 的打字机输出 |
+| ephemeral | 仅指定用户可见 |
+| 语音 | `JoinVoice` 取 Media Token，媒体层自接 SFU（参考 loadbot） |
+| 上传 | 图标、贴图、附件路径便捷 API |
 
 认证：
 
 ```text
 Authorization: Bot <owlbot_xxx>
-Base URL:     https://<server>/bot-api/v1
-Gateway:      wss://<server>/bot-api/v1/gateway
+Base:     https://<server>/bot-api/v1
+Gateway:  wss://<server>/bot-api/v1/gateway
+限流:     约 20 QPS / bot（突发 40）
 ```
-
----
 
 ## 快速开始
 
 ### 1. 准备 Token
 
-1. OwlSpeak 管理控制台 → 开放平台 / 机器人 → 创建机器人  
-2. 签发 token（明文仅显示一次，形如 `owlbot_…`）  
-3. 安装到服务器，并按需绑定角色（如 `MANAGE_ROLES`、`KICK_MEMBERS`）
+1. 管理控制台 → **开放平台 / 机器人** → 创建  
+2. 签发 token（明文仅一次，`owlbot_…`）  
+3. 安装到服务器并绑定角色（如 `SEND_MESSAGES`、`MANAGE_ROLES`）
 
-### 2. 各语言安装
+### 2. 安装与最小代码
 
 **JavaScript**
 
 ```bash
-# monorepo 本地
-cd javascript && npm link   # 或在业务项目 package.json 中:
-# "@owlspeak/bot-sdk": "file:../OwlBotSdk/javascript"
+# monorepo: "@owlspeak/bot-sdk": "file:../OwlBotSdk/javascript"
 ```
 
 ```js
 import { OwlBotClient } from "@owlspeak/bot-sdk"
 const bot = new OwlBotClient({
-  baseUrl: "https://owl.example.com",
+  baseUrl: "https://owl-panel.example.com",
   token: process.env.OWL_BOT_TOKEN,
 })
 await bot.sendText(channelId, "你好！")
 const gw = bot.connectGateway()
 gw.on("MESSAGE_CREATE", (msg) => console.log(msg.content))
+gw.on("interaction", async (i) => { await i.reply("收到", { ephemeral: true }) })
 ```
 
 **Go**
 
 ```bash
 go get github.com/OwlSpeak/OwlBotSdk/go@latest
-# 本地开发：
-# go.mod 中 replace github.com/OwlSpeak/OwlBotSdk/go => ../OwlBotSdk/go
 ```
 
 ```go
-import owlbot "github.com/OwlSpeak/OwlBotSdk/go"
-
-bot := owlbot.New("https://owl.example.com", os.Getenv("OWL_BOT_TOKEN"))
+bot := owlbot.New("https://owl-panel.example.com", os.Getenv("OWL_BOT_TOKEN"))
 _, _ = bot.SendText(channelID, "你好！")
 gw := bot.ConnectGateway()
-gw.On("MESSAGE_CREATE", func(payload json.RawMessage) { /* ... */ })
+gw.OnInteraction(func(i *owlbot.Interaction) { _, _ = i.ReplyText("收到") })
 ```
 
 **Python**
@@ -89,15 +94,8 @@ pip install -e "./python[gateway]"
 
 ```python
 from owlspeak_bot import OwlBotClient, run_gateway
-import asyncio
-
-bot = OwlBotClient("https://owl.example.com", token=os.environ["OWL_BOT_TOKEN"])
+bot = OwlBotClient("https://owl-panel.example.com", token=os.environ["OWL_BOT_TOKEN"])
 bot.send_message(channel_id, "你好！")
-
-async def on_event(event, data):
-    if event == "MESSAGE_CREATE":
-        print(data.get("content"))
-
 asyncio.run(run_gateway(bot, on_event))
 ```
 
@@ -105,108 +103,61 @@ asyncio.run(run_gateway(bot, on_event))
 
 ```toml
 owlspeak-bot = { path = "../OwlBotSdk/rust" }
-tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 ```
 
 ```rust
-use owlspeak_bot::Client;
-let bot = Client::new("https://owl.example.com", std::env::var("OWL_BOT_TOKEN")?)?;
-bot.send_text("channel-id", "你好！").await?;
+let bot = Client::new("https://owl-panel.example.com", std::env::var("OWL_BOT_TOKEN")?)?;
+bot.send_text(&channel_id, "你好！").await?;
 ```
 
-### 3. 反应角色示例（JS）
-
-```js
-const RULES_MESSAGE_ID = process.env.RULES_MESSAGE_ID
-const VERIFIED_ROLE_ID = process.env.VERIFIED_ROLE_ID
-const gw = bot.connectGateway()
-gw.on("MESSAGE_REACTION_ADD", async (ev) => {
-  if (String(ev.message_id) !== RULES_MESSAGE_ID || ev.emoji !== "✅") return
-  await bot.addMemberRole(ev.guild_id, ev.user_id, VERIFIED_ROLE_ID)
-})
-```
-
----
+可运行示例：[`examples/`](examples/)（反应角色，四语言）。
 
 ## 仓库结构
 
 ```text
 OwlBotSdk/
-├── README.md                 # 本文件
-├── LICENSE                   # MIT
-├── docs/API.md               # 完整 HTTP / Gateway 协议
-├── javascript/               # @owlspeak/bot-sdk
-├── go/                       # github.com/OwlSpeak/OwlBotSdk/go
-├── python/                   # owlspeak-bot
-├── rust/                     # owlspeak-bot (crates.io 风格)
-└── examples/                 # 各语言最小可运行示例
+├── docs/           # API 协议、覆盖矩阵、Go 方法目录
+├── javascript/     # @owlspeak/bot-sdk
+├── go/
+├── python/
+├── rust/
+├── examples/       # 最小可运行示例
+└── LICENSE         # MIT
 ```
 
----
+## 文档
 
-## 与 Owl-Server 的关系
+| 文档 | 内容 |
+|------|------|
+| [**docs/USAGE.md**](docs/USAGE.md) | 使用指南（推荐入口） |
+| [**docs/HTTP-API.md**](docs/HTTP-API.md) | 接口调用精简版 |
+| [docs/API.md](docs/API.md) | HTTP / Gateway **完整**协议与能力矩阵 |
+| [docs/COVERAGE.md](docs/COVERAGE.md) | 服务端挂载 ↔ SDK 覆盖 |
+| [docs/METHODS.md](docs/METHODS.md) | Go `Client` 方法全表（146+） |
+| [javascript/README.md](javascript/README.md) | JS 专章（流式 AI 示例等） |
+| [go/README.md](go/README.md) | Go 专章（语音 / 交互） |
+| [python/README.md](python/README.md) | Python 专章 |
+| [rust/README.md](rust/README.md) | Rust 专章 |
+
+## 与 Owl-Server
 
 | 仓库 | 职责 |
 |------|------|
-| **Owl-Server** | 服务端实现 `/bot-api/v1`、权限、Gateway |
-| **OwlBotSdk**（本仓库） | 官方客户端 SDK，独立版本与发布节奏 |
+| **Owl-Server** | 实现 `/bot-api/v1`、权限、Gateway、交互 callback |
+| **OwlBotSdk**（本仓） | 官方客户端；**权威源**（独立版本节奏） |
 
-Owl-Server 内若仍保留 `sdk/` 目录，仅作兼容镜像；**以本仓库为权威源**。
+`Owl-Server/sdk/` 若仍存在，仅为兼容镜像。
 
----
-
-## 文件上传（路径便捷 API）
-
-```go
-// Go
-_, err := bot.UploadGuildIconFile(guildID, "./assets/icon.png")
-_, err = bot.UploadStickerItemFile(packID, "./stickers/wave.png")
-// 通用：bot.UploadFile("POST", "/guilds/"+id+"/icon", "./icon.png")
-```
-
-```js
-// JavaScript（Node）
-await bot.uploadGuildIconFile(guildId, "./assets/icon.png")
-await bot.uploadStickerItemFile(packId, "./stickers/wave.png")
-// 浏览器：await bot.uploadMultipart("POST", `/guilds/${id}/icon`, fileBlob, "icon.png")
-```
-
-```python
-# Python
-bot.upload_guild_icon_file(guild_id, "./assets/icon.png")
-bot.upload_sticker_item_file(pack_id, "./stickers/wave.png")
-```
-
-```rust
-// Rust
-bot.upload_guild_icon_file(guild_id, "./assets/icon.png").await?;
-bot.upload_sticker_item_file(pack_id, "./stickers/wave.png").await?;
-```
-
-## 开发
+## 开发自检
 
 ```bash
-# Go
 cd go && go test ./... && go build ./...
-
-# Python
-cd python && python -m compileall owlspeak_bot
-
-# Rust
-cd rust && cargo check
-
-# JS：语法检查（需 Node 21+）
-cd javascript && node --check index.js
+cd ../python && python -m compileall owlspeak_bot
+cd ../rust && cargo check
+cd ../javascript && node --check index.js   # Node 21+
 ```
 
----
+## 版本与许可
 
-## 版本
-
-当前统一版本：**0.1.0**
-
-变更日志与各语言发布说明随 tag 维护（`v0.1.0`）。
-
-## 许可证
-
-[MIT](LICENSE)
+- 当前统一版本：**0.1.0**（随 tag `v0.1.0`）  
+- 许可证：[MIT](LICENSE)
