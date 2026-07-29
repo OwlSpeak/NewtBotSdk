@@ -1,14 +1,14 @@
-# owlspeak-bot（Rust SDK）
+# newtspeak-bot（Rust SDK）
 
-OwlSpeak 机器人开放平台官方 Rust SDK。异步 REST（`reqwest` + `tokio`）与 Gateway（`tokio-tungstenite`）。
+NewtSpeak 机器人开放平台官方 Rust SDK。异步 REST（`reqwest` + `tokio`）与 Gateway（`tokio-tungstenite`）。
 
 ## 安装
 
 ```toml
 [dependencies]
-owlspeak-bot = { git = "https://github.com/OwlSpeak/OwlBotSdk", path = "rust" }
+newtspeak-bot = { git = "https://github.com/NewtSpeak/NewtBotSdk", path = "rust" }
 # 或本地路径：
-# owlspeak-bot = { path = "../rust" }
+# newtspeak-bot = { path = "../rust" }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 serde_json = "1"
 ```
@@ -16,11 +16,11 @@ serde_json = "1"
 ## 快速上手
 
 ```rust
-use owlspeak_bot::{connect_gateway, Client, HandlerMap};
+use newtspeak_bot::{connect_gateway, Client, HandlerMap};
 use serde_json::json;
 
 #[tokio::main]
-async fn main() -> owlspeak_bot::Result<()> {
+async fn main() -> newtspeak_bot::Result<()> {
     let bot = Client::new("https://owl.example.com", std::env::var("OWL_BOT_TOKEN").unwrap())?;
 
     bot.send_text("channel-id", "你好！").await?;
@@ -66,7 +66,7 @@ async fn main() -> owlspeak_bot::Result<()> {
 ## 按钮交互与 ephemeral
 
 ```rust
-use owlspeak_bot::{connect_gateway, Client, HandlerMap, Interaction};
+use newtspeak_bot::{connect_gateway, Client, HandlerMap, Interaction};
 use serde_json::json;
 
 // 1. 发带交互按钮的卡片（custom_id 触发 INTERACTION_CREATE；url 为链接按钮）

@@ -1,6 +1,6 @@
 # Bot API ↔ SDK 覆盖清单
 
-对照 Owl-Server `/bot-api/v1` 挂载面（`botapi.RegisterBotAPI` 及各 `RegisterBot`）。
+对照 Newt-Server `/bot-api/v1` 挂载面（`botapi.RegisterBotAPI` 及各 `RegisterBot`）。
 
 图例：✅ 已封装 · ⚠️ 经 `request`/`raw` 可调用 · ❌ 不在 bot 平面
 

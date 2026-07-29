@@ -3,22 +3,22 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "owlspeak-bot"
+name = "newtspeak-bot"
 version = "0.1.0"
-description = "OwlSpeak 机器人开放平台官方 Python SDK"
+description = "NewtSpeak 机器人开放平台官方 Python SDK"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 keywords = ["owlspeak", "owlbot", "bot", "sdk", "chat", "voice", "gateway"]
-authors = [{ name = "OwlSpeak" }]
+authors = [{ name = "NewtSpeak" }]
 
 [project.optional-dependencies]
 gateway = ["websockets>=12"]
 
 [project.urls]
-Homepage = "https://github.com/OwlSpeak/OwlBotSdk"
-Documentation = "https://github.com/OwlSpeak/OwlBotSdk/blob/main/docs/API.md"
-Repository = "https://github.com/OwlSpeak/OwlBotSdk"
+Homepage = "https://github.com/NewtSpeak/NewtBotSdk"
+Documentation = "https://github.com/NewtSpeak/NewtBotSdk/blob/main/docs/API.md"
+Repository = "https://github.com/NewtSpeak/NewtBotSdk"
 
 [tool.setuptools]
-packages = ["owlspeak_bot"]
+packages = ["newtspeak_bot"]

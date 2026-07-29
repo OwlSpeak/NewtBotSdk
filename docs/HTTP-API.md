@@ -1,4 +1,4 @@
-# OwlBotSdk 接口调用文档
+# NewtBotSdk 接口调用文档
 
 Base：`https://<server>/bot-api/v1`  
 认证：`Authorization: Bot <owlbot_xxx>`（兼容 `Bearer`）
@@ -260,7 +260,7 @@ SDK **不**覆盖该面；用控制台或 Agent（system_admin）操作。
 | 28 | `MANAGE_ROLES` | `1<<28` |
 | 39 | `MODERATE_MEMBERS` | `1<<39` |
 
-完整列表：`Owl-Server/backend/internal/rbac/permissions.go`。
+完整列表：`Newt-Server/backend/internal/rbac/permissions.go`。
 
 ---
 

@@ -6,7 +6,7 @@
 import unittest
 from unittest.mock import patch
 
-from owlspeak_bot import Interaction, OwlBotClient
+from newtspeak_bot import Interaction, OwlBotClient
 
 SAMPLE_PAYLOAD = {
     "id": "1234567890123456789",

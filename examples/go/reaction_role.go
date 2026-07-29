@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	owlbot "github.com/OwlSpeak/OwlBotSdk/go"
+	owlbot "github.com/NewtSpeak/NewtBotSdk/go"
 )
 
 func main() {

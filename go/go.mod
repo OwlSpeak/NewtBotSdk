@@ -1,4 +1,4 @@
-module github.com/OwlSpeak/OwlBotSdk/go
+module github.com/NewtSpeak/NewtBotSdk/go
 
 go 1.22
 

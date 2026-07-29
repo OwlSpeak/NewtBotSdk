@@ -1,15 +1,15 @@
 [package]
-name = "owlspeak-bot"
+name = "newtspeak-bot"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.75"
-description = "OwlSpeak 机器人开放平台官方 Rust SDK"
+description = "NewtSpeak 机器人开放平台官方 Rust SDK"
 license = "MIT"
 readme = "README.md"
 keywords = ["owlspeak", "owlbot", "bot", "sdk", "chat", "gateway"]
 categories = ["api-bindings", "asynchronous", "network-programming"]
-repository = "https://github.com/OwlSpeak/OwlBotSdk"
-homepage = "https://github.com/OwlSpeak/OwlBotSdk/tree/main/rust"
+repository = "https://github.com/NewtSpeak/NewtBotSdk"
+homepage = "https://github.com/NewtSpeak/NewtBotSdk/tree/main/rust"
 
 [dependencies]
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "multipart"] }
@@ -27,5 +27,5 @@ urlencoding = "2"
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 
 [lib]
-name = "owlspeak_bot"
+name = "newtspeak_bot"
 path = "src/lib.rs"

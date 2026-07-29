@@ -1,26 +1,26 @@
-# OwlBotSdk
+# NewtBotSdk
 
-OwlSpeak **机器人开放平台官方 SDK**（多语言 monorepo）。  
+NewtSpeak **机器人开放平台官方 SDK**（多语言 monorepo）。  
 用 **bot token** 调用 Server 的 `/bot-api/v1`，在 RBAC 权限内实现自动化：消息、反应角色、卡片按钮、治理、语音进房等。
 
 > **bot 即成员**：`User(IsBot=true)` + 角色权限，与人类同一套规则，无特权通道。
 
 ```text
-你的 Bot 进程  ── OwlBotSdk ──►  https://<server>/bot-api/v1
+你的 Bot 进程  ── NewtBotSdk ──►  https://<server>/bot-api/v1
                               wss://<server>/bot-api/v1/gateway
-权限与事件过滤由 Owl-Server 裁决
+权限与事件过滤由 Newt-Server 裁决
 ```
 
-与 [Owl-Agent](https://github.com/OwlSpeak/Owl-Agent) 的区别：Agent 是 **真人 OAuth** 运维/AI 入口；本仓是 **机器人身份** 的程序化 API。
+与 [Newt-Agent](https://github.com/NewtSpeak/Newt-Agent) 的区别：Agent 是 **真人 OAuth** 运维/AI 入口；本仓是 **机器人身份** 的程序化 API。
 
 ## 语言与包
 
 | 语言 | 目录 | 包名 | 特点 |
 |------|------|------|------|
-| **JavaScript / TypeScript** | [`javascript/`](javascript/) | `@owlspeak/bot-sdk` | 零依赖；Node ≥ 21（原生 fetch / WebSocket） |
-| **Go** | [`go/`](go/) | `github.com/OwlSpeak/OwlBotSdk/go` | Gateway + 可接 pion 语音 |
-| **Python** | [`python/`](python/) | `owlspeak-bot` | REST 标准库；Gateway 可选 `websockets` |
-| **Rust** | [`rust/`](rust/) | `owlspeak-bot` | `reqwest` + `tokio` + tungstenite |
+| **JavaScript / TypeScript** | [`javascript/`](javascript/) | `@newtspeak/bot-sdk` | 零依赖；Node ≥ 21（原生 fetch / WebSocket） |
+| **Go** | [`go/`](go/) | `github.com/NewtSpeak/NewtBotSdk/go` | Gateway + 可接 pion 语音 |
+| **Python** | [`python/`](python/) | `newtspeak-bot` | REST 标准库；Gateway 可选 `websockets` |
+| **Rust** | [`rust/`](rust/) | `newtspeak-bot` | `reqwest` + `tokio` + tungstenite |
 
 四语言 API 面 intentionally 对齐：消息（含 ephemeral / 流式 / 按钮交互）、角色、成员治理、邀请、Restriction、语音、贴图、Gateway。
 
@@ -58,11 +58,11 @@ Gateway:  wss://<server>/bot-api/v1/gateway
 **JavaScript**
 
 ```bash
-# monorepo: "@owlspeak/bot-sdk": "file:../OwlBotSdk/javascript"
+# monorepo: "@newtspeak/bot-sdk": "file:../NewtBotSdk/javascript"
 ```
 
 ```js
-import { OwlBotClient } from "@owlspeak/bot-sdk"
+import { OwlBotClient } from "@newtspeak/bot-sdk"
 const bot = new OwlBotClient({
   baseUrl: "https://owl-panel.example.com",
   token: process.env.OWL_BOT_TOKEN,
@@ -76,7 +76,7 @@ gw.on("interaction", async (i) => { await i.reply("收到", { ephemeral: true })
 **Go**
 
 ```bash
-go get github.com/OwlSpeak/OwlBotSdk/go@latest
+go get github.com/NewtSpeak/NewtBotSdk/go@latest
 ```
 
 ```go
@@ -93,7 +93,7 @@ pip install -e "./python[gateway]"
 ```
 
 ```python
-from owlspeak_bot import OwlBotClient, run_gateway
+from newtspeak_bot import OwlBotClient, run_gateway
 bot = OwlBotClient("https://owl-panel.example.com", token=os.environ["OWL_BOT_TOKEN"])
 bot.send_message(channel_id, "你好！")
 asyncio.run(run_gateway(bot, on_event))
@@ -102,7 +102,7 @@ asyncio.run(run_gateway(bot, on_event))
 **Rust**
 
 ```toml
-owlspeak-bot = { path = "../OwlBotSdk/rust" }
+newtspeak-bot = { path = "../NewtBotSdk/rust" }
 ```
 
 ```rust
@@ -115,9 +115,9 @@ bot.send_text(&channel_id, "你好！").await?;
 ## 仓库结构
 
 ```text
-OwlBotSdk/
+NewtBotSdk/
 ├── docs/           # API 协议、覆盖矩阵、Go 方法目录
-├── javascript/     # @owlspeak/bot-sdk
+├── javascript/     # @newtspeak/bot-sdk
 ├── go/
 ├── python/
 ├── rust/
@@ -139,20 +139,20 @@ OwlBotSdk/
 | [python/README.md](python/README.md) | Python 专章 |
 | [rust/README.md](rust/README.md) | Rust 专章 |
 
-## 与 Owl-Server
+## 与 Newt-Server
 
 | 仓库 | 职责 |
 |------|------|
-| **Owl-Server** | 实现 `/bot-api/v1`、权限、Gateway、交互 callback |
-| **OwlBotSdk**（本仓） | 官方客户端；**权威源**（独立版本节奏） |
+| **Newt-Server** | 实现 `/bot-api/v1`、权限、Gateway、交互 callback |
+| **NewtBotSdk**（本仓） | 官方客户端；**权威源**（独立版本节奏） |
 
-`Owl-Server/sdk/` 若仍存在，仅为兼容镜像。
+`Newt-Server/sdk/` 若仍存在，仅为兼容镜像。
 
 ## 开发自检
 
 ```bash
 cd go && go test ./... && go build ./...
-cd ../python && python -m compileall owlspeak_bot
+cd ../python && python -m compileall newtspeak_bot
 cd ../rust && cargo check
 cd ../javascript && node --check index.js   # Node 21+
 ```

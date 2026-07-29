@@ -6,7 +6,7 @@ use serde::Serialize;
 use serde_json::{json, Value};
 use uuid::Uuid;
 
-/// OwlSpeak Bot REST 客户端。
+/// NewtSpeak Bot REST 客户端。
 ///
 /// 认证：`Authorization: Bot <token>`；基础地址自动拼接 `/bot-api/v1`。
 #[derive(Clone)]

@@ -1,6 +1,6 @@
-# OwlSpeak Bot 开放平台与 SDK
+# NewtSpeak Bot 开放平台与 SDK
 
-OwlSpeak 为机器人提供独立的开放 API 平面（`/bot-api/v1`），配套 JavaScript / Python / Go 三种语言的官方 SDK。
+NewtSpeak 为机器人提供独立的开放 API 平面（`/bot-api/v1`），配套 JavaScript / Python / Go 三种语言的官方 SDK。
 机器人不需要注册用户账号、不需要操作客户端：由管理员在控制台创建机器人并签发 **bot token**，
 即可在被赋予的角色权限范围内，调用与 **Discord 开放平台 Bot 对齐** 的能力集。
 
@@ -8,7 +8,7 @@ OwlSpeak 为机器人提供独立的开放 API 平面（`/bot-api/v1`），配�
 
 1. **bot 即成员**：`User(IsBot=true)` + `Member` + `Role`，权限位与人类成员同一套 RBAC。
 2. **无特权通道**：所有写操作在 handler 内校验权限位与角色层级；安装 bot ≠ 全服管理员。
-3. **能力面 = 产品已实现的 Discord Bot 能力**：OwlSpeak 已有的业务 API 均投影到 bot 平面；尚未产品化的能力（如 Webhook、Slash Command、Pin、Thread）明确标注「未实现」。
+3. **能力面 = 产品已实现的 Discord Bot 能力**：NewtSpeak 已有的业务 API 均投影到 bot 平面；尚未产品化的能力（如 Webhook、Slash Command、Pin、Thread）明确标注「未实现」。
 
 ## 快速开始
 
@@ -25,7 +25,7 @@ OwlSpeak 为机器人提供独立的开放 API 平面（`/bot-api/v1`），配�
 
 ## Discord 能力对照矩阵
 
-| Discord 领域 | OwlSpeak bot 状态 | 权限位 / 说明 |
+| Discord 领域 | NewtSpeak bot 状态 | 权限位 / 说明 |
 |---|---|---|
 | Get Current User / Guilds | ✅ | 成员即可读 |
 | Get/Modify Guild | ✅ | 修改需 `MANAGE_GUILD` |

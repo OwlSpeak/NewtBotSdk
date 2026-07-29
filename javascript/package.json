@@ -1,7 +1,7 @@
 {
-  "name": "@owlspeak/bot-sdk",
+  "name": "@newtspeak/bot-sdk",
   "version": "0.1.0",
-  "description": "OwlSpeak 机器人开放平台官方 JavaScript / TypeScript SDK（零依赖，Node >= 21）",
+  "description": "NewtSpeak 机器人开放平台官方 JavaScript / TypeScript SDK（零依赖，Node >= 21）",
   "type": "module",
   "main": "index.js",
   "types": "index.d.ts",
@@ -32,8 +32,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/OwlSpeak/OwlBotSdk.git",
+    "url": "https://github.com/NewtSpeak/NewtBotSdk.git",
     "directory": "javascript"
   },
-  "homepage": "https://github.com/OwlSpeak/OwlBotSdk/tree/main/javascript"
+  "homepage": "https://github.com/NewtSpeak/NewtBotSdk/tree/main/javascript"
 }

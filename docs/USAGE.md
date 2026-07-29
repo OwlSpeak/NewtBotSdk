@@ -1,4 +1,4 @@
-# OwlBotSdk 使用文档
+# NewtBotSdk 使用文档
 
 机器人官方多语言 SDK。以 **bot token** 调用 `/bot-api/v1`，权限与人类成员同一套 RBAC。
 
@@ -30,17 +30,17 @@ Gateway:  wss://<server>/bot-api/v1/gateway
 
 | 语言 | 安装 |
 |------|------|
-| **JS/TS** | `npm i @owlspeak/bot-sdk` 或 monorepo `file:../OwlBotSdk/javascript`（Node ≥ 21） |
-| **Go** | `go get github.com/OwlSpeak/OwlBotSdk/go@latest` |
-| **Python** | `pip install -e "./OwlBotSdk/python[gateway]"` |
-| **Rust** | `owlspeak-bot = { path = "OwlBotSdk/rust" }` + tokio |
+| **JS/TS** | `npm i @newtspeak/bot-sdk` 或 monorepo `file:../NewtBotSdk/javascript`（Node ≥ 21） |
+| **Go** | `go get github.com/NewtSpeak/NewtBotSdk/go@latest` |
+| **Python** | `pip install -e "./NewtBotSdk/python[gateway]"` |
+| **Rust** | `newtspeak-bot = { path = "NewtBotSdk/rust" }` + tokio |
 
 ## 3. 最小示例
 
 ### JavaScript
 
 ```js
-import { OwlBotClient } from "@owlspeak/bot-sdk"
+import { OwlBotClient } from "@newtspeak/bot-sdk"
 
 const bot = new OwlBotClient({
   baseUrl: "https://owl-panel.example.com",
@@ -76,7 +76,7 @@ select {}
 ### Python
 
 ```python
-from owlspeak_bot import OwlBotClient, run_gateway
+from newtspeak_bot import OwlBotClient, run_gateway
 import asyncio, os
 
 bot = OwlBotClient("https://owl-panel.example.com", token=os.environ["OWL_BOT_TOKEN"])
@@ -154,7 +154,7 @@ gw.on("interaction", async (i) => {
 ```go
 v, err := bot.JoinVoice(guildID, voiceChannelID)
 // v.Token → Media Token；v.AdvertiseWSSURL → SFU 信令
-// 媒体层参考 Owl-SFU/cmd/loadbot（pion）
+// 媒体层参考 Newt-SFU/cmd/loadbot（pion）
 defer bot.LeaveVoice(guildID)
 ```
 
@@ -173,17 +173,17 @@ await bot.uploadGuildIconFile(gid, "./icon.png")
 
 | 路径 | 内容 |
 |------|------|
-| `OwlBotSdk/examples/go/` | 反应角色 |
-| `OwlBotSdk/examples/javascript/` | 同上 |
-| `OwlBotSdk/examples/python/` | 同上 |
-| `OwlBotSdk/examples/rust/` | 同上 |
+| `NewtBotSdk/examples/go/` | 反应角色 |
+| `NewtBotSdk/examples/javascript/` | 同上 |
+| `NewtBotSdk/examples/python/` | 同上 |
+| `NewtBotSdk/examples/rust/` | 同上 |
 
 ```bash
 export OWL_BASE_URL=https://owl-panel.example.com
 export OWL_BOT_TOKEN=owlbot_xxx
 export RULES_MESSAGE_ID=...
 export VERIFIED_ROLE_ID=...
-cd OwlBotSdk/examples/go && go run .
+cd NewtBotSdk/examples/go && go run .
 ```
 
 ## 6. 排障
@@ -204,4 +204,4 @@ cd OwlBotSdk/examples/go && go run .
 | [HTTP-API.md](./HTTP-API.md) | HTTP / Gateway 接口调用 |
 | [METHODS.md](./METHODS.md) | Go 方法全表（146+） |
 | [COVERAGE.md](./COVERAGE.md) | 服务端 ↔ SDK 覆盖 |
-| [Owl-Agent](https://github.com/OwlSpeak/Owl-Agent) | 用户侧 CLI / MCP |
+| [Newt-Agent](https://github.com/NewtSpeak/Newt-Agent) | 用户侧 CLI / MCP |

@@ -1,4 +1,4 @@
-//! OwlSpeak 机器人开放平台官方 Rust SDK。
+//! NewtSpeak 机器人开放平台官方 Rust SDK。
 //!
 //! # 快速开始
 //!

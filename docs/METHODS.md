@@ -1,6 +1,6 @@
 # Go SDK 公开方法目录
 
-模块：`github.com/OwlSpeak/OwlBotSdk/go`（`package owlbot`）
+模块：`github.com/NewtSpeak/NewtBotSdk/go`（`package owlbot`）
 
 共 **146** 个 `Client` 方法（含文件路径便捷封装）。
 

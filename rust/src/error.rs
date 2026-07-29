@@ -2,7 +2,7 @@
 
 use thiserror::Error;
 
-/// OwlSpeak Bot API 错误。
+/// NewtSpeak Bot API 错误。
 #[derive(Debug, Error)]
 pub enum Error {
     /// HTTP 业务错误（服务端返回 4xx/5xx 且带 error.code）。
