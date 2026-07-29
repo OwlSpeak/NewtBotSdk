@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	bot := owlbot.New(os.Getenv("OWL_BASE_URL"), os.Getenv("OWL_BOT_TOKEN"))
+	bot := owlbot.New(os.Getenv("NEWT_BASE_URL"), os.Getenv("NEWT_BOT_TOKEN"))
 	rulesMessageID := os.Getenv("RULES_MESSAGE_ID")
 	verifiedRoleID := os.Getenv("VERIFIED_ROLE_ID")
 

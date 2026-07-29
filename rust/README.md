@@ -21,7 +21,7 @@ use serde_json::json;
 
 #[tokio::main]
 async fn main() -> newtspeak_bot::Result<()> {
-    let bot = Client::new("https://owl.example.com", std::env::var("OWL_BOT_TOKEN").unwrap())?;
+    let bot = Client::new("https://newt.example.com", std::env::var("NEWT_BOT_TOKEN").unwrap())?;
 
     bot.send_text("channel-id", "你好！").await?;
     bot.send_card(

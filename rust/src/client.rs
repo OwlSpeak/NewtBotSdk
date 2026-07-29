@@ -17,7 +17,7 @@ pub struct Client {
 }
 
 impl Client {
-    /// 创建客户端。`base_url` 形如 `https://owl.example.com`。
+    /// 创建客户端。`base_url` 形如 `https://newt.example.com`。
     pub fn new(base_url: impl AsRef<str>, token: impl Into<String>) -> Result<Self> {
         let base = base_url.as_ref().trim_end_matches('/');
         if base.is_empty() {

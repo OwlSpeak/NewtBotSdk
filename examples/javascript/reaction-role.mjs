@@ -1,8 +1,8 @@
 /**
  * 反应角色最小示例。
  *
- *   export OWL_BASE_URL=https://owl.example.com
- *   export OWL_BOT_TOKEN=owlbot_xxx
+ *   export NEWT_BASE_URL=https://newt.example.com
+ *   export NEWT_BOT_TOKEN=newtbot_xxx
  *   export RULES_MESSAGE_ID=...
  *   export VERIFIED_ROLE_ID=...
  *   node examples/javascript/reaction-role.mjs
@@ -11,8 +11,8 @@
 import { OwlBotClient } from "../../javascript/index.js"
 
 const bot = new OwlBotClient({
-  baseUrl: process.env.OWL_BASE_URL,
-  token: process.env.OWL_BOT_TOKEN,
+  baseUrl: process.env.NEWT_BASE_URL,
+  token: process.env.NEWT_BOT_TOKEN,
 })
 
 const RULES_MESSAGE_ID = process.env.RULES_MESSAGE_ID

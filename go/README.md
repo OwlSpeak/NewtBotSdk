@@ -27,7 +27,7 @@ import (
 )
 
 func main() {
-	bot := owlbot.New("https://owl.example.com", "owlbot_xxx")
+	bot := owlbot.New("https://newt.example.com", "newtbot_xxx")
 
 	// 实时事件
 	gw := bot.ConnectGateway()

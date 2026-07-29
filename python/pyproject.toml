@@ -9,7 +9,7 @@ description = "NewtSpeak 机器人开放平台官方 Python SDK"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
-keywords = ["owlspeak", "owlbot", "bot", "sdk", "chat", "voice", "gateway"]
+keywords = ["newtspeak", "owlbot", "bot", "sdk", "chat", "voice", "gateway"]
 authors = [{ name = "NewtSpeak" }]
 
 [project.optional-dependencies]

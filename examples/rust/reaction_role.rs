@@ -2,14 +2,14 @@
 //!
 //! 运行需自行建 package 并依赖 path = "../../rust"。
 
-use owlspeak_bot::{connect_gateway, Client, HandlerMap};
+use newtspeak_bot::{connect_gateway, Client, HandlerMap};
 use std::sync::Arc;
 
 #[tokio::main]
-async fn main() -> owlspeak_bot::Result<()> {
+async fn main() -> newtspeak_bot::Result<()> {
     let bot = Client::new(
-        std::env::var("OWL_BASE_URL").expect("OWL_BASE_URL"),
-        std::env::var("OWL_BOT_TOKEN").expect("OWL_BOT_TOKEN"),
+        std::env::var("NEWT_BASE_URL").expect("NEWT_BASE_URL"),
+        std::env::var("NEWT_BOT_TOKEN").expect("NEWT_BOT_TOKEN"),
     )?;
     let rules = Arc::new(std::env::var("RULES_MESSAGE_ID").expect("RULES_MESSAGE_ID"));
     let role = Arc::new(std::env::var("VERIFIED_ROLE_ID").expect("VERIFIED_ROLE_ID"));

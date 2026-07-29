@@ -13,7 +13,7 @@ NewtSpeak 为机器人提供独立的开放 API 平面（`/bot-api/v1`），配�
 ## 快速开始
 
 1. 管理控制台 → 「开放平台 / 机器人」→ 创建机器人；
-2. 「token 管理」→ 签发 token（明文形如 `owlbot_xxx`，仅显示一次）；
+2. 「token 管理」→ 签发 token（明文形如 `newtbot_xxx`，仅显示一次）；
 3. 「安装到服务器与权限赋予」→ 选择服务器安装，并为机器人绑定角色（按需授予 `MANAGE_ROLES` / `KICK_MEMBERS` / `BAN_MEMBERS` 等）；
 4. 用任一 SDK 或直接调 HTTP API 开始工作。
 
@@ -231,7 +231,7 @@ Rust `send_ephemeral(channel_id, user_id, content, card)`。
 ```json
 {
   "id": "1234567890123456789",
-  "token": "owlint_xxx",
+  "token": "newtint_xxx",
   "guild_id": "<uuid>",
   "channel_id": "<uuid>",
   "message_id": "9876543210",
@@ -241,7 +241,7 @@ Rust `send_ephemeral(channel_id, user_id, content, card)`。
 }
 ```
 
-- `id`：交互 ID（雪花）；`token`：一次性回应令牌（`owlint_...`）；
+- `id`：交互 ID（雪花）；`token`：一次性回应令牌（`newtint_...`）；
 - `expires_at`：创建 +15 分钟，过期后回应返回 410。
 
 #### callback 端点
@@ -255,7 +255,7 @@ Body：
 
 ```json
 {
-  "token": "owlint_...",
+  "token": "newtint_...",
   "type": "ack | reply | update_message",
   "content": "可选",
   "card": {},

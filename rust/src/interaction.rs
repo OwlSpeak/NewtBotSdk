@@ -24,7 +24,7 @@ pub struct InteractionMember {
 pub struct Interaction {
     /// 交互 ID（雪花）。
     pub id: String,
-    /// 一次性回应令牌（`owlint_...`）。
+    /// 一次性回应令牌（`newtint_...`）。
     pub token: String,
     pub guild_id: String,
     pub channel_id: String,
@@ -147,7 +147,7 @@ mod tests {
     fn sample_payload() -> Value {
         json!({
             "id": "1234567890123456789",
-            "token": "owlint_abc",
+            "token": "newtint_abc",
             "guild_id": "guild-uuid",
             "channel_id": "channel-uuid",
             "message_id": "9876543210",
@@ -159,10 +159,10 @@ mod tests {
 
     #[test]
     fn from_value_parses_fields() {
-        let client = Client::new("https://owl.example.com", "owlbot_test").unwrap();
+        let client = Client::new("https://newt.example.com", "newtbot_test").unwrap();
         let interaction = Interaction::from_value(client, sample_payload()).unwrap();
         assert_eq!(interaction.id, "1234567890123456789");
-        assert_eq!(interaction.token, "owlint_abc");
+        assert_eq!(interaction.token, "newtint_abc");
         assert_eq!(interaction.custom_id, "approve:42");
         assert_eq!(interaction.message_id, "9876543210");
         assert_eq!(interaction.member.user_id, "user-uuid");
@@ -172,7 +172,7 @@ mod tests {
 
     #[test]
     fn from_value_rejects_missing_token() {
-        let client = Client::new("https://owl.example.com", "owlbot_test").unwrap();
+        let client = Client::new("https://newt.example.com", "newtbot_test").unwrap();
         assert!(Interaction::from_value(client, json!({ "id": "1" })).is_err());
     }
 }

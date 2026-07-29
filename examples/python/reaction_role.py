@@ -5,9 +5,9 @@ from __future__ import annotations
 import asyncio
 import os
 
-from owlspeak_bot import OwlBotClient, run_gateway
+from newtspeak_bot import OwlBotClient, run_gateway
 
-bot = OwlBotClient(os.environ["OWL_BASE_URL"], token=os.environ["OWL_BOT_TOKEN"])
+bot = OwlBotClient(os.environ["NEWT_BASE_URL"], token=os.environ["NEWT_BOT_TOKEN"])
 RULES_MESSAGE_ID = os.environ["RULES_MESSAGE_ID"]
 VERIFIED_ROLE_ID = os.environ["VERIFIED_ROLE_ID"]
 

@@ -39,7 +39,7 @@ NewtSpeak **机器人开放平台官方 SDK**（多语言 monorepo）。
 认证：
 
 ```text
-Authorization: Bot <owlbot_xxx>
+Authorization: Bot <newtbot_xxx>
 Base:     https://<server>/bot-api/v1
 Gateway:  wss://<server>/bot-api/v1/gateway
 限流:     约 20 QPS / bot（突发 40）
@@ -50,7 +50,7 @@ Gateway:  wss://<server>/bot-api/v1/gateway
 ### 1. 准备 Token
 
 1. 管理控制台 → **开放平台 / 机器人** → 创建  
-2. 签发 token（明文仅一次，`owlbot_…`）  
+2. 签发 token（明文仅一次，`newtbot_…`）  
 3. 安装到服务器并绑定角色（如 `SEND_MESSAGES`、`MANAGE_ROLES`）
 
 ### 2. 安装与最小代码
@@ -64,8 +64,8 @@ Gateway:  wss://<server>/bot-api/v1/gateway
 ```js
 import { OwlBotClient } from "@newtspeak/bot-sdk"
 const bot = new OwlBotClient({
-  baseUrl: "https://owl-panel.example.com",
-  token: process.env.OWL_BOT_TOKEN,
+  baseUrl: "https://newt-panel.example.com",
+  token: process.env.NEWT_BOT_TOKEN,
 })
 await bot.sendText(channelId, "你好！")
 const gw = bot.connectGateway()
@@ -80,7 +80,7 @@ go get github.com/NewtSpeak/NewtBotSdk/go@latest
 ```
 
 ```go
-bot := owlbot.New("https://owl-panel.example.com", os.Getenv("OWL_BOT_TOKEN"))
+bot := owlbot.New("https://newt-panel.example.com", os.Getenv("NEWT_BOT_TOKEN"))
 _, _ = bot.SendText(channelID, "你好！")
 gw := bot.ConnectGateway()
 gw.OnInteraction(func(i *owlbot.Interaction) { _, _ = i.ReplyText("收到") })
@@ -94,7 +94,7 @@ pip install -e "./python[gateway]"
 
 ```python
 from newtspeak_bot import OwlBotClient, run_gateway
-bot = OwlBotClient("https://owl-panel.example.com", token=os.environ["OWL_BOT_TOKEN"])
+bot = OwlBotClient("https://newt-panel.example.com", token=os.environ["NEWT_BOT_TOKEN"])
 bot.send_message(channel_id, "你好！")
 asyncio.run(run_gateway(bot, on_event))
 ```
@@ -106,7 +106,7 @@ newtspeak-bot = { path = "../NewtBotSdk/rust" }
 ```
 
 ```rust
-let bot = Client::new("https://owl-panel.example.com", std::env::var("OWL_BOT_TOKEN")?)?;
+let bot = Client::new("https://newt-panel.example.com", std::env::var("NEWT_BOT_TOKEN")?)?;
 bot.send_text(&channel_id, "你好！").await?;
 ```
 

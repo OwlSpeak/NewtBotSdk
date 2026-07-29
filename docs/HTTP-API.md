@@ -1,7 +1,7 @@
 # NewtBotSdk 接口调用文档
 
 Base：`https://<server>/bot-api/v1`  
-认证：`Authorization: Bot <owlbot_xxx>`（兼容 `Bearer`）
+认证：`Authorization: Bot <newtbot_xxx>`（兼容 `Bearer`）
 
 完整矩阵与 schema 见 [API.md](./API.md)。
 
@@ -9,8 +9,8 @@ Base：`https://<server>/bot-api/v1`
 
 ```http
 GET /bot-api/v1/me HTTP/1.1
-Host: owl-panel.example.com
-Authorization: Bot owlbot_xxx
+Host: newt-panel.example.com
+Authorization: Bot newtbot_xxx
 Accept: application/json
 ```
 
@@ -23,8 +23,8 @@ Accept: application/json
 ### curl 速查
 
 ```bash
-export BASE=https://owl-panel.example.com/bot-api/v1
-export AUTH="Authorization: Bot $OWL_BOT_TOKEN"
+export BASE=https://newt-panel.example.com/bot-api/v1
+export AUTH="Authorization: Bot $NEWT_BOT_TOKEN"
 
 curl -sH "$AUTH" $BASE/me
 curl -sH "$AUTH" $BASE/guilds
@@ -133,7 +133,7 @@ Authorization: Bot <token>
 
 ```json
 {
-  "token": "owlint_...",
+  "token": "newtint_...",
   "type": "ack | reply | update_message",
   "content": "可选",
   "card": {},
@@ -183,7 +183,7 @@ Authorization: Bot <token>
 WS  wss://<server>/bot-api/v1/gateway
 
 S→C  HELLO
-C→S  IDENTIFY { "token": "owlbot_..." }
+C→S  IDENTIFY { "token": "newtbot_..." }
 S→C  READY
 C↔S  HEARTBEAT / HEARTBEAT_ACK
 S→C  DISPATCH { "t": "<EVENT>", "d": { ... } }
@@ -219,7 +219,7 @@ S→C  DISPATCH { "t": "<EVENT>", "d": { ... } }
 ```json
 {
   "id": "…",
-  "token": "owlint_…",
+  "token": "newtint_…",
   "guild_id": "…",
   "channel_id": "…",
   "message_id": "…",

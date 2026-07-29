@@ -11,7 +11,7 @@ import (
 
 const sampleInteraction = `{
 	"id": "1234567890123456789",
-	"token": "owlint_abc",
+	"token": "newtint_abc",
 	"guild_id": "guild-uuid",
 	"channel_id": "channel-uuid",
 	"message_id": "9876543210",
@@ -21,13 +21,13 @@ const sampleInteraction = `{
 }`
 
 func TestParseInteraction(t *testing.T) {
-	c := New("https://owl.example.com", "owlbot_test")
+	c := New("https://newt.example.com", "newtbot_test")
 	interaction, err := c.ParseInteraction(json.RawMessage(sampleInteraction))
 	if err != nil {
 		t.Fatalf("ParseInteraction: %v", err)
 	}
 	if interaction.ID != "1234567890123456789" ||
-		interaction.Token != "owlint_abc" ||
+		interaction.Token != "newtint_abc" ||
 		interaction.CustomID != "approve:42" ||
 		interaction.MessageID != "9876543210" ||
 		interaction.Member.UserID != "user-uuid" ||
@@ -76,7 +76,7 @@ func TestInteractionCallbackRequests(t *testing.T) {
 	}))
 	defer server.Close()
 
-	c := New(server.URL, "owlbot_test")
+	c := New(server.URL, "newtbot_test")
 	interaction, err := c.ParseInteraction(json.RawMessage(sampleInteraction))
 	if err != nil {
 		t.Fatal(err)
@@ -88,7 +88,7 @@ func TestInteractionCallbackRequests(t *testing.T) {
 	if last.path != "/bot-api/v1/interactions/1234567890123456789/callback" {
 		t.Fatalf("回调路径不符: %s", last.path)
 	}
-	if last.body["type"] != "ack" || last.body["token"] != "owlint_abc" {
+	if last.body["type"] != "ack" || last.body["token"] != "newtint_abc" {
 		t.Fatalf("ack 请求体不符: %+v", last.body)
 	}
 	if _, has := last.body["ephemeral"]; has {
@@ -135,7 +135,7 @@ func TestSendEphemeralBody(t *testing.T) {
 	}))
 	defer server.Close()
 
-	c := New(server.URL, "owlbot_test")
+	c := New(server.URL, "newtbot_test")
 	if _, err := c.SendEphemeral("channel-uuid", "user-uuid", "仅你可见", nil); err != nil {
 		t.Fatal(err)
 	}

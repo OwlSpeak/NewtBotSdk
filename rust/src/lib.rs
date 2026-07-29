@@ -3,12 +3,12 @@
 //! # 快速开始
 //!
 //! ```no_run
-//! use owlspeak_bot::{Client, HandlerMap, connect_gateway};
+//! use newtspeak_bot::{Client, HandlerMap, connect_gateway};
 //! use serde_json::json;
 //!
 //! #[tokio::main]
-//! async fn main() -> owlspeak_bot::Result<()> {
-//!     let bot = Client::new("https://owl.example.com", "owlbot_xxx")?;
+//! async fn main() -> newtspeak_bot::Result<()> {
+//!     let bot = Client::new("https://newt.example.com", "newtbot_xxx")?;
 //!
 //!     // 发卡片消息
 //!     bot.send_card(

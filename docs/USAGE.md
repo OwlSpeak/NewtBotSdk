@@ -9,14 +9,14 @@
 | | Bot SDK | Agent CLI |
 |--|---------|-----------|
 | 身份 | 机器人（`IsBot=true`） | 真人 OAuth 用户 |
-| 凭证 | `owlbot_…` token | 设备码 / PKCE |
+| 凭证 | `newtbot_…` token | 设备码 / PKCE |
 | 平面 | `/bot-api/v1` | `/gapi/v1`（+ 可选 `/api/v1`） |
 | 场景 | 自动化、反应角色、卡片交互 | 运维、AI Skill、MCP |
 
 ## 1. 准备 Token
 
 1. 管理控制台 → **开放平台 / 机器人** → 创建机器人  
-2. **Token 管理** → 签发（明文仅一次，形如 `owlbot_xxx`）  
+2. **Token 管理** → 签发（明文仅一次，形如 `newtbot_xxx`）  
 3. **安装到服务器**，绑定角色（按需 `SEND_MESSAGES` / `MANAGE_ROLES` / `KICK_MEMBERS` 等）
 
 ```text
@@ -43,8 +43,8 @@ Gateway:  wss://<server>/bot-api/v1/gateway
 import { OwlBotClient } from "@newtspeak/bot-sdk"
 
 const bot = new OwlBotClient({
-  baseUrl: "https://owl-panel.example.com",
-  token: process.env.OWL_BOT_TOKEN,
+  baseUrl: "https://newt-panel.example.com",
+  token: process.env.NEWT_BOT_TOKEN,
 })
 
 await bot.sendText(channelId, "你好！")
@@ -62,7 +62,7 @@ gw.on("interaction", async (i) => {
 ### Go
 
 ```go
-bot := owlbot.New("https://owl-panel.example.com", os.Getenv("OWL_BOT_TOKEN"))
+bot := owlbot.New("https://newt-panel.example.com", os.Getenv("NEWT_BOT_TOKEN"))
 _, _ = bot.SendText(channelID, "你好！")
 
 gw := bot.ConnectGateway()
@@ -79,7 +79,7 @@ select {}
 from newtspeak_bot import OwlBotClient, run_gateway
 import asyncio, os
 
-bot = OwlBotClient("https://owl-panel.example.com", token=os.environ["OWL_BOT_TOKEN"])
+bot = OwlBotClient("https://newt-panel.example.com", token=os.environ["NEWT_BOT_TOKEN"])
 bot.send_message(channel_id, "你好！")
 
 async def on_event(event, data):
@@ -92,7 +92,7 @@ asyncio.run(run_gateway(bot, on_event))
 ### Rust
 
 ```rust
-let bot = Client::new("https://owl-panel.example.com", std::env::var("OWL_BOT_TOKEN")?)?;
+let bot = Client::new("https://newt-panel.example.com", std::env::var("NEWT_BOT_TOKEN")?)?;
 bot.send_text(&channel_id, "你好！").await?;
 ```
 
@@ -179,8 +179,8 @@ await bot.uploadGuildIconFile(gid, "./icon.png")
 | `NewtBotSdk/examples/rust/` | 同上 |
 
 ```bash
-export OWL_BASE_URL=https://owl-panel.example.com
-export OWL_BOT_TOKEN=owlbot_xxx
+export NEWT_BASE_URL=https://newt-panel.example.com
+export NEWT_BOT_TOKEN=newtbot_xxx
 export RULES_MESSAGE_ID=...
 export VERIFIED_ROLE_ID=...
 cd NewtBotSdk/examples/go && go run .
